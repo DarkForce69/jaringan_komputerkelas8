@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Petualangan Mendaki Gunung Gede — Jaringan Komputer dan Internet</title>
+
+<!-- Tailwind CSS (CDN), FontAwesome, dan Google Fonts -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ===================== TEMA WARNA & DASAR ===================== */
+:root{
+  --forest:#2d6a4f; --deep:#1b4332; --leaf:#52b788; --sky:#4cc9f0;
+  --earth:#8d5a2b; --sun:#ff9f1c; --cream:#fff8e7;
+}
+html{font-size:18px;scroll-behavior:smooth}
+body{
+  font-family:'Nunito',sans-serif;color:#2b2118;
+  background:linear-gradient(180deg,#bde7f7 0%,#d8f3dc 35%,#fff8e7 100%);
+  min-height:100vh;
+}
+h1,h2,h3,h4,.fun{font-family:'Baloo 2',cursive;line-height:1.15}
+
+/* ===================== KOMPONEN UMUM ===================== */
+.card{background:#fff;border-radius:1.5rem;border:3px solid #fff;
+  box-shadow:0 7px 0 rgba(141,90,43,.2),0 14px 30px rgba(0,0,0,.08)}
+.card-wood{background:linear-gradient(180deg,#f3d9a8,#e7c488);border:3px solid #c08a4f;border-radius:1.25rem}
+.btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:800;border-radius:9999px;
+  padding:.65rem 1.3rem;cursor:pointer;border:none;transition:transform .15s, box-shadow .15s, filter .15s;
+  box-shadow:0 5px 0 rgba(0,0,0,.2)}
+.btn:hover{transform:translateY(-3px) scale(1.03);filter:brightness(1.06)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-sun{background:var(--sun);color:#3a2200}
+.btn-forest{background:var(--forest);color:#fff}
+.btn-sky{background:var(--sky);color:#06283d}
+.btn-earth{background:var(--earth);color:#fff}
+.btn-red{background:#e63946;color:#fff}
+.callout{border-left:8px solid var(--sun);background:#fff4d6;border-radius:1rem;padding:1rem 1.2rem}
+.callout-green{border-left-color:var(--forest);background:#e3f6e8}
+.callout-blue{border-left-color:#1d8fd6;background:#e1f3fd}
+.badge{display:inline-flex;align-items:center;gap:.4rem;border-radius:9999px;padding:.25rem .9rem;font-weight:800;font-size:.85rem}
+input[type=text],input[type=number],textarea,select{
+  width:100%;border:3px solid #c9b48a;border-radius:1rem;padding:.6rem .9rem;background:#fffdf6;font-size:1rem}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--forest);box-shadow:0 0 0 4px rgba(82,183,136,.3)}
+:focus-visible{outline:4px solid #1d4ed8;outline-offset:2px}
+
+/* ===================== NAVIGASI ===================== */
+.tabbtn{display:flex;align-items:center;gap:.5rem;white-space:nowrap;font-weight:800;padding:.55rem 1rem;
+  border-radius:9999px;color:#fff;background:rgba(255,255,255,.15);transition:all .2s;cursor:pointer;border:2px solid transparent}
+.tabbtn:hover{background:rgba(255,255,255,.3);transform:translateY(-2px)}
+.tabbtn.active{background:var(--sun);color:#3a2200;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.hide-scroll{scrollbar-width:thin}
+.trail-track{height:10px;border-radius:9999px;background:repeating-linear-gradient(90deg,#c08a4f 0 14px,#e7c488 14px 22px)}
+.trail-hiker{transition:left .7s cubic-bezier(.4,1.4,.5,1);position:absolute;top:-18px}
+
+/* ===================== ANIMASI ===================== */
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.panel-enter{animation:rise .55s ease both}
+@keyframes drift{from{transform:translateX(-260px)}to{transform:translateX(1320px)}}
+.cloud{animation:drift 60s linear infinite}
+.cloud.c2{animation-duration:85s;animation-delay:-30s}
+.cloud.c3{animation-duration:70s;animation-delay:-55s}
+.cloud.c4{animation-duration:95s;animation-delay:-10s}
+@keyframes sway{from{transform:rotate(-2.5deg)}to{transform:rotate(2.5deg)}}
+.sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 3s ease-in-out infinite alternate}
+.sway.s2{animation-duration:3.8s;animation-delay:-1s}
+.sway.s3{animation-duration:2.6s;animation-delay:-2s}
+@keyframes flow{to{stroke-dashoffset:-44}}
+.water{stroke-dasharray:14 8;animation:flow 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sunrays{transform-box:fill-box;transform-origin:center;animation:spin 40s linear infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.bob{animation:bob 2.4s ease-in-out infinite}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.shake{animation:shake .4s}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .45s ease both}
+@keyframes steps{0%{opacity:0;transform:translateY(10px)}50%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
+.footprint{animation:steps 1s ease-in-out infinite}
+.footprint:nth-child(2){animation-delay:.2s}.footprint:nth-child(3){animation-delay:.4s}.footprint:nth-child(4){animation-delay:.6s}
+
+/* Layar transisi antarlokasi */
+#travel{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;
+  background:linear-gradient(180deg,#2d6a4f,#1b4332);color:#fff;opacity:0;pointer-events:none;transition:opacity .3s}
+#travel.show{opacity:.96;pointer-events:all}
+
+/* ===================== DRAG AND DROP ===================== */
+.chip{background:#fff;border:3px solid var(--forest);color:var(--deep);border-radius:9999px;padding:.5rem 1rem;
+  font-weight:800;cursor:grab;user-select:none;box-shadow:0 4px 0 rgba(45,106,79,.3);transition:transform .15s}
+.chip:hover{transform:translateY(-3px)}
+.chip.sel{background:#fff1b8;border-color:var(--sun);transform:scale(1.07)}
+.chip.ok{background:#d8f3dc;cursor:default;box-shadow:none}
+.dz{border:3px dashed #b08b57;background:#fffaf0;border-radius:1.1rem;padding:.7rem .9rem;min-height:4.2rem;transition:all .2s}
+.dz.over{background:#fff1b8;border-color:var(--sun)}
+.dz.done{border-style:solid;border-color:var(--leaf);background:#e8f8ec}
+
+/* ===================== SINYAL & ROUTING ===================== */
+.bar{width:16px;border-radius:4px;background:#d4d4d4;transition:background .3s}
+.bar.on{background:#2a9d8f}
+.bar.warn.on{background:#ff9f1c}
+.bar.bad.on{background:#e63946}
+.rt-edge{stroke:#a98b62;stroke-width:5;stroke-linecap:round}
+.rt-node{cursor:default}
+
+/* Menghormati pengguna yang mengurangi animasi */
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+table.tbl{width:100%;border-collapse:collapse}
+table.tbl th{background:var(--forest);color:#fff;padding:.5rem;text-align:left}
+table.tbl td{padding:.5rem;border-bottom:2px solid #eadfc7;vertical-align:top}
+</style>
+</head>
+
+<body>
+<!-- ================== LAYAR TRANSISI PERPINDAHAN LOKASI ================== -->
+<div id="travel" aria-hidden="true">
+  <div class="text-6xl bob"><i class="fa-solid fa-person-hiking"></i></div>
+  <div class="fun text-3xl" id="travel-text">Mendaki…</div>
+  <div class="flex gap-3 text-2xl text-amber-200">
+    <i class="fa-solid fa-shoe-prints footprint"></i><i class="fa-solid fa-shoe-prints footprint"></i>
+    <i class="fa-solid fa-shoe-prints footprint"></i><i class="fa-solid fa-shoe-prints footprint"></i>
+  </div>
+</div>
+
+<!-- ================== HEADER & NAVIGASI TAB ================== -->
+<header class="sticky top-0 z-40 shadow-lg" style="background:linear-gradient(180deg,#2d6a4f,#1b4332)">
+  <div class="max-w-6xl mx-auto px-3 pt-3">
+    <div class="flex items-center gap-3 text-white">
+      <div class="text-3xl text-amber-300"><i class="fa-solid fa-mountain-sun"></i></div>
+      <div class="leading-tight">
+        <div class="fun text-xl sm:text-2xl font-extrabold">Petualangan Mendaki Gunung Gede</div>
+        <div class="text-xs sm:text-sm text-green-100">Jaringan Komputer dan Internet • Informatika Kelas 8</div>
+      </div>
+    </div>
+    <nav id="nav" class="hide-scroll flex gap-2 overflow-x-auto py-3" aria-label="Navigasi utama"></nav>
+    <!-- Jalur pendakian: posisi pendaki mengikuti tab aktif -->
+    <div class="relative pb-4 px-3 hidden sm:block" aria-hidden="true">
+      <div class="trail-track"></div>
+      <div id="trail-hiker" class="trail-hiker text-2xl text-amber-300"><i class="fa-solid fa-person-hiking"></i></div>
+      <div class="absolute right-0 -top-5 text-xl text-orange-300"><i class="fa-solid fa-flag"></i></div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-3 sm:px-4 py-6">
+
+<!-- ===================================================================
+     TAB 1 : HOME
+==================================================================== -->
+<section id="tab-home" class="tab-panel">
+  <div class="card overflow-hidden">
+    <!-- Ilustrasi pemandangan Gunung Gede (SVG, teranimasi dengan CSS) -->
+    <div class="relative">
+      <svg viewBox="0 0 1200 440" class="w-full h-auto block" role="img" aria-label="Pemandangan Gunung Gede dengan pendaki cilik, hutan pinus, air terjun, dan bunga edelweiss">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4cc9f0"/><stop offset="1" stop-color="#e6f9ff"/></linearGradient>
+          <linearGradient id="mtnG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5f9c73"/><stop offset="1" stop-color="#2d6a4f"/></linearGradient>
+          <!-- Pohon pinus -->
+          <g id="pine">
+            <rect x="-4" y="-10" width="8" height="14" fill="#6b4423"/>
+            <path d="M-24 -8 L0 -50 L24 -8Z" fill="#1b4332"/>
+            <path d="M-19 -30 L0 -68 L19 -30Z" fill="#2d6a4f"/>
+            <path d="M-14 -52 L0 -86 L14 -52Z" fill="#40916c"/>
+          </g>
+          <!-- Bunga edelweiss -->
+          <g id="edel">
+            <line x1="0" y1="0" x2="0" y2="14" stroke="#2d6a4f" stroke-width="2"/>
+            <g fill="#fff" stroke="#d8d8d8" stroke-width=".6">
+              <ellipse cx="0" cy="-6" rx="2.6" ry="5"/><ellipse cx="0" cy="-6" rx="2.6" ry="5" transform="rotate(60)"/>
+              <ellipse cx="0" cy="-6" rx="2.6" ry="5" transform="rotate(120)"/><ellipse cx="0" cy="-6" rx="2.6" ry="5" transform="rotate(180)"/>
+              <ellipse cx="0" cy="-6" rx="2.6" ry="5" transform="rotate(240)"/><ellipse cx="0" cy="-6" rx="2.6" ry="5" transform="rotate(300)"/>
+            </g>
+            <circle r="2.6" fill="#ffb703"/>
+          </g>
+          <g id="cloudShape" fill="#fff" opacity=".95">
+            <ellipse cx="0" cy="0" rx="46" ry="16"/><ellipse cx="-24" cy="-8" rx="22" ry="15"/><ellipse cx="14" cy="-14" rx="26" ry="18"/>
+          </g>
+        </defs>
+
+        <rect width="1200" height="440" fill="url(#sky)"/>
+        <!-- Matahari -->
+        <g transform="translate(1060 78)">
+          <g class="sunrays" stroke="#ffb703" stroke-width="6" stroke-linecap="round">
+            <line x1="0" y1="-62" x2="0" y2="-80"/><line x1="0" y1="62" x2="0" y2="80"/><line x1="-62" y1="0" x2="-80" y2="0"/><line x1="62" y1="0" x2="80" y2="0"/>
+            <line x1="44" y1="44" x2="57" y2="57"/><line x1="-44" y1="-44" x2="-57" y2="-57"/><line x1="44" y1="-44" x2="57" y2="-57"/><line x1="-44" y1="44" x2="-57" y2="57"/>
+          </g>
+          <circle r="46" fill="#ffb703"/><circle r="36" fill="#ffd166"/>
+        </g>
+        <!-- Awan bergerak -->
+        <g class="cloud c1"><use href="#cloudShape" x="0" y="70"/></g>
+        <g class="cloud c2"><use href="#cloudShape" x="0" y="130" transform="scale(.8)"/></g>
+        <g class="cloud c3"><use href="#cloudShape" x="0" y="45" transform="translate(0 40)"/></g>
+        <g class="cloud c4"><use href="#cloudShape" x="0" y="190" transform="scale(.6)"/></g>
+
+        <!-- Gunung Pangrango (belakang) & Gunung Gede -->
+        <path d="M560 440 L730 170 L800 120 L850 165 L1010 440Z" fill="#7fb69a"/>
+        <path d="M80 440 L330 175 L405 120 L435 138 L475 108 L530 165 L780 440Z" fill="url(#mtnG)"/>
+        <path d="M405 120 L435 138 L475 108 L455 128 L435 118Z" fill="#e8f5ec" opacity=".85"/>
+        <!-- Bendera puncak -->
+        <g transform="translate(475 108)"><line x1="0" y1="0" x2="0" y2="-46" stroke="#5b3a1a" stroke-width="4"/>
+          <path d="M0 -46 L34 -36 L0 -26Z" fill="#ff9f1c"/></g>
+
+        <!-- Tebing & air terjun -->
+        <path d="M880 440 L900 235 L985 225 L1015 440Z" fill="#8a7358"/>
+        <path d="M900 235 L985 225 L975 240 L912 248Z" fill="#a38b6c"/>
+        <line class="water" x1="942" y1="236" x2="942" y2="372" stroke="#fff" stroke-width="13" stroke-linecap="round"/>
+        <line class="water" x1="962" y1="234" x2="962" y2="368" stroke="#cdeefc" stroke-width="7" stroke-linecap="round" style="animation-delay:-.4s"/>
+
+        <!-- Bukit depan -->
+        <path d="M0 440 L0 335 Q160 270 340 330 T700 322 T1000 330 T1200 310 L1200 440Z" fill="#40916c"/>
+        <path d="M0 440 L0 385 Q220 335 460 385 T900 380 T1200 375 L1200 440Z" fill="#2d6a4f"/>
+        <ellipse cx="946" cy="376" rx="58" ry="11" fill="#8ecae6"/><ellipse cx="946" cy="376" rx="34" ry="6" fill="#cdeefc"/>
+
+        <!-- Pohon pinus bergoyang -->
+        <g transform="translate(60 372) scale(.9)"><g class="sway"><use href="#pine"/></g></g>
+        <g transform="translate(130 392) scale(1.15)"><g class="sway s2"><use href="#pine"/></g></g>
+        <g transform="translate(560 352) scale(.8)"><g class="sway s3"><use href="#pine"/></g></g>
+        <g transform="translate(610 372) scale(1.05)"><g class="sway"><use href="#pine"/></g></g>
+        <g transform="translate(700 345) scale(.7)"><g class="sway s2"><use href="#pine"/></g></g>
+        <g transform="translate(1090 360) scale(1.1)"><g class="sway s3"><use href="#pine"/></g></g>
+        <g transform="translate(1150 382) scale(1.3)"><g class="sway"><use href="#pine"/></g></g>
+
+        <!-- Jalur pendakian -->
+        <path id="trail" d="M60 428 Q250 392 305 340 T385 262 T440 170" fill="none" stroke="#e7c488" stroke-width="9" stroke-linecap="round" stroke-dasharray="2 14" opacity=".95"/>
+        <path d="M60 428 Q250 392 305 340 T385 262 T440 170" fill="none" stroke="#8d5a2b" stroke-width="3" stroke-linecap="round" stroke-dasharray="10 10" opacity=".7"/>
+
+        <!-- Bunga edelweiss -->
+        <g class="sway s2"><use href="#edel" transform="translate(240 405)"/></g>
+        <g class="sway"><use href="#edel" transform="translate(268 413) scale(.8)"/></g>
+        <g class="sway s3"><use href="#edel" transform="translate(790 395)"/></g>
+        <g class="sway s2"><use href="#edel" transform="translate(822 404) scale(.85)"/></g>
+        <g class="sway"><use href="#edel" transform="translate(500 408) scale(.9)"/></g>
+
+        <!-- Pendaki cilik berjalan di jalur -->
+        <g>
+          <animateMotion dur="16s" repeatCount="indefinite" rotate="0"><mpath href="#trail"/></animateMotion>
+          <g class="bob" style="transform-box:fill-box">
+            <ellipse cx="0" cy="2" rx="12" ry="3" fill="rgba(0,0,0,.2)"/>
+            <rect x="-6" y="-14" width="5" height="14" rx="2" fill="#1d4ed8"/><rect x="2" y="-14" width="5" height="14" rx="2" fill="#1d4ed8"/>
+            <rect x="-9" y="-34" width="18" height="22" rx="6" fill="#ef476f"/>
+            <rect x="-15" y="-34" width="9" height="18" rx="4" fill="#ff9f1c"/>
+            <circle cx="0" cy="-42" r="8" fill="#ffd3a8"/>
+            <path d="M-10 -44 Q0 -58 10 -44Z" fill="#2d6a4f"/><rect x="-11" y="-45" width="22" height="3" rx="1.5" fill="#1b4332"/>
+            <circle cx="3" cy="-41" r="1.4" fill="#2b2118"/>
+          </g>
+        </g>
+      </svg>
+
+      <!-- Papan judul di atas ilustrasi -->
+      <div class="absolute left-3 top-3 sm:left-6 sm:top-6 card-wood px-4 py-3 shadow-lg max-w-[78%] sm:max-w-md">
+        <div class="badge bg-green-700 text-white mb-1"><i class="fa-solid fa-signs-post"></i> Basecamp Cibodas</div>
+        <h1 class="fun text-2xl sm:text-4xl font-extrabold text-amber-950">Jelajahi Dunia Jaringan!</h1>
+        <p class="text-sm sm:text-base text-amber-950 font-semibold mt-1">Daki Gunung Gede sambil belajar bagaimana data berpindah dari satu perangkat ke perangkat lain.</p>
+      </div>
+    </div>
+
+    <div class="p-5 sm:p-8">
+      <div class="flex flex-wrap gap-3 mb-6">
+        <button class="btn btn-sun text-lg" onclick="showTab('tujuan')"><i class="fa-solid fa-person-hiking"></i> Mulai Pendakian</button>
+        <button class="btn btn-sky" onclick="showTab('materi')"><i class="fa-solid fa-map-location-dot"></i> Langsung ke Materi</button>
+        <span class="badge bg-green-100 text-green-900"><i class="fa-solid fa-graduation-cap"></i> Kelas 8 • Fase D • Informatika</span>
+        <span class="badge bg-amber-100 text-amber-900"><i class="fa-solid fa-network-wired"></i> Elemen: Jaringan Komputer dan Internet</span>
+      </div>
+
+      <h2 class="fun text-2xl sm:text-3xl text-green-900 mb-3"><i class="fa-solid fa-map text-amber-600"></i> Peta Jalur Pendakianmu</h2>
+      <p class="mb-4">Setiap pos di jalur pendakian berisi satu bagian materi. Klik sebuah pos untuk langsung menuju ke sana.</p>
+      <div id="home-pos" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+      <div class="callout callout-green mt-8">
+        <div class="fun text-xl mb-1"><i class="fa-solid fa-backpack"></i> Bekal Pendakian</div>
+        <p>Siapkan semangat, rasa ingin tahu, dan buku kerja. Selama pendakian, kalian akan membaca materi, mencoba simulasi, menjawab kuis, bermain <em>drag and drop</em>, lalu menulis refleksi di akhir perjalanan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     TAB 2 : TUJUAN PEMBELAJARAN
+==================================================================== -->
+<section id="tab-tujuan" class="tab-panel hidden">
+  <div class="card p-5 sm:p-8">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="text-5xl text-orange-500"><i class="fa-solid fa-compass"></i></div>
+      <div><h2 class="fun text-3xl sm:text-4xl text-green-900 font-extrabold">Tujuan Pembelajaran</h2>
+      <p class="text-green-800 font-semibold">Kompas penunjuk arah pendakian kita hari ini</p></div>
+    </div>
+
+    <div class="callout mb-6">
+      <b>Pertanyaan Pemantik:</b> Jaringan komputer dapat terdiri atas banyak perangkat yang saling terhubung. Bagaimana cara data dikirim dari satu perangkat ke perangkat lain, dan mengapa sinyal ponselmu bisa kuat di puncak tetapi hilang di dalam gedung?
+    </div>
+
+    <h3 class="fun text-2xl text-green-900 mb-3"><i class="fa-solid fa-flag-checkered text-orange-500"></i> Pada akhir pembelajaran, kalian mampu:</h3>
+    <ol id="tp-list" class="space-y-3 mb-8"></ol>
+
+    <h3 class="fun text-2xl text-green-900 mb-3"><i class="fa-solid fa-seedling text-green-600"></i> Alur Belajar Mendalam</h3>
+    <div class="grid sm:grid-cols-3 gap-4 mb-8">
+      <div class="card-wood p-4"><div class="text-3xl text-green-800 mb-1"><i class="fa-solid fa-book-open-reader"></i></div><b class="fun text-xl">Memahami</b><p class="text-sm mt-1">Membaca materi di Pos 1 sampai Pos 6 dan memahami konsep dengan analogi pendakian.</p></div>
+      <div class="card-wood p-4"><div class="text-3xl text-green-800 mb-1"><i class="fa-solid fa-hammer"></i></div><b class="fun text-xl">Mengaplikasikan</b><p class="text-sm mt-1">Mencoba simulasi alamat IP, jalur routing, dan kekuatan sinyal, lalu mengerjakan kuis dan permainan.</p></div>
+      <div class="card-wood p-4"><div class="text-3xl text-green-800 mb-1"><i class="fa-solid fa-lightbulb"></i></div><b class="fun text-xl">Merefleksi</b><p class="text-sm mt-1">Menuliskan apa yang sudah dipahami, apa yang masih sulit, dan contoh di kehidupan sehari-hari.</p></div>
+    </div>
+
+    <h3 class="fun text-2xl text-green-900 mb-3"><i class="fa-solid fa-tree text-green-700"></i> Dimensi Profil Lulusan yang Dilatih</h3>
+    <div class="flex flex-wrap gap-3">
+      <span class="badge bg-green-100 text-green-900 text-base"><i class="fa-solid fa-brain"></i> Penalaran Kritis</span>
+      <span class="badge bg-sky-100 text-sky-900 text-base"><i class="fa-solid fa-people-group"></i> Kolaborasi</span>
+      <span class="badge bg-amber-100 text-amber-900 text-base"><i class="fa-solid fa-person-walking"></i> Kemandirian</span>
+      <span class="badge bg-rose-100 text-rose-900 text-base"><i class="fa-solid fa-comments"></i> Komunikasi</span>
+    </div>
+    <div class="mt-8 text-center"><button class="btn btn-sun text-lg" onclick="openMateri(0)"><i class="fa-solid fa-person-hiking"></i> Berangkat ke Pos 1</button></div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     TAB 3 : MATERI (Pos 1 s.d. Puncak)
+==================================================================== -->
+<section id="tab-materi" class="tab-panel hidden">
+  <div class="card p-4 sm:p-6">
+    <div id="pos-nav" class="hide-scroll flex gap-2 overflow-x-auto pb-3 mb-4" role="tablist" aria-label="Pos pendakian"></div>
+    <div id="pos-content"></div>
+    <div class="flex justify-between gap-3 mt-8">
+      <button id="pos-prev" class="btn btn-earth"><i class="fa-solid fa-arrow-left"></i> Pos sebelumnya</button>
+      <button id="pos-next" class="btn btn-sun">Pos berikutnya <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     TAB 4 : KUIS INTERAKTIF
+==================================================================== -->
+<section id="tab-kuis" class="tab-panel hidden">
+  <div class="card p-5 sm:p-8">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="text-5xl text-orange-500"><i class="fa-solid fa-flag-checkered"></i></div>
+      <div><h2 class="fun text-3xl sm:text-4xl text-green-900 font-extrabold">Kuis Menuju Puncak</h2>
+      <p class="text-green-800 font-semibold">Jawab dengan benar agar pendakimu naik sampai puncak!</p></div>
+    </div>
+    <div id="quiz-box"></div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     TAB 5 : DRAG AND DROP
+==================================================================== -->
+<section id="tab-dnd" class="tab-panel hidden">
+  <div class="card p-5 sm:p-8">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="text-5xl text-orange-500"><i class="fa-solid fa-hand-pointer"></i></div>
+      <div><h2 class="fun text-3xl sm:text-4xl text-green-900 font-extrabold">Permainan Seret dan Lepas</h2>
+      <p class="text-green-800 font-semibold">Pasang kartu di tempat yang tepat</p></div>
+    </div>
+    <div class="callout callout-blue mb-6 text-sm sm:text-base"><i class="fa-solid fa-circle-info"></i> <b>Di laptop:</b> seret kartu ke kotak tujuan. <b>Di ponsel atau tablet:</b> ketuk kartu terlebih dahulu, lalu ketuk kotak tujuannya.</div>
+
+    <!-- Permainan 1 -->
+    <h3 class="fun text-2xl text-green-900 mb-1"><i class="fa-solid fa-link text-sky-600"></i> Permainan 1 — Pasangkan Istilah dan Artinya</h3>
+    <p class="mb-3">Seret setiap istilah ke arti yang sesuai.</p>
+    <div id="g1-status" class="badge bg-amber-100 text-amber-900 mb-3"></div>
+    <div id="g1-pool" class="flex flex-wrap gap-3 p-3 rounded-2xl bg-green-50 border-2 border-green-200 mb-4 min-h-[4rem]"></div>
+    <div id="g1-zones" class="grid md:grid-cols-2 gap-3"></div>
+    <div class="mt-4 flex gap-3 flex-wrap items-center"><button class="btn btn-earth" id="g1-reset"><i class="fa-solid fa-rotate-left"></i> Main lagi</button><div id="g1-msg" class="font-extrabold text-green-800"></div></div>
+
+    <hr class="my-10 border-2 border-dashed border-amber-300">
+
+    <!-- Permainan 2 -->
+    <h3 class="fun text-2xl text-green-900 mb-1"><i class="fa-solid fa-tower-cell text-rose-600"></i> Permainan 2 — Kuatkan atau Lemahkan Sinyal?</h3>
+    <p class="mb-3">Kelompokkan setiap kondisi: apakah membuat sinyal ponsel menguat atau melemah?</p>
+    <div id="g2-status" class="badge bg-amber-100 text-amber-900 mb-3"></div>
+    <div id="g2-pool" class="flex flex-wrap gap-3 p-3 rounded-2xl bg-green-50 border-2 border-green-200 mb-4 min-h-[4rem]"></div>
+    <div id="g2-zones" class="grid md:grid-cols-2 gap-3"></div>
+    <div class="mt-4 flex gap-3 flex-wrap items-center"><button class="btn btn-earth" id="g2-reset"><i class="fa-solid fa-rotate-left"></i> Main lagi</button><div id="g2-msg" class="font-extrabold text-green-800"></div></div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     TAB 6 : REFLEKSI MURID
+==================================================================== -->
+<section id="tab-refleksi" class="tab-panel hidden">
+  <div class="card p-5 sm:p-8">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="text-5xl text-orange-500"><i class="fa-solid fa-campground"></i></div>
+      <div><h2 class="fun text-3xl sm:text-4xl text-green-900 font-extrabold">Refleksi di Api Unggun</h2>
+      <p class="text-green-800 font-semibold">Duduk sejenak, ceritakan perjalanan belajarmu (Kelas 8A &amp; 8B)</p></div>
+    </div>
+
+    <form id="ref-form" class="space-y-6" novalidate>
+      <div class="grid sm:grid-cols-3 gap-4">
+        <div class="sm:col-span-2"><label class="font-extrabold block mb-1" for="ref-nama">Nama lengkap</label>
+          <input type="text" id="ref-nama" maxlength="60" placeholder="Tuliskan namamu" autocomplete="off"></div>
+        <div><label class="font-extrabold block mb-1" for="ref-absen">Nomor absen</label>
+          <input type="number" id="ref-absen" min="1" max="60" placeholder="mis. 12"></div>
+      </div>
+
+      <div><div class="font-extrabold mb-2">Kelas</div>
+        <div class="flex gap-3" id="ref-kelas">
+          <label class="btn btn-sky cursor-pointer"><input type="radio" name="kelas" value="8A" class="mr-1"> Kelas 8A</label>
+          <label class="btn btn-sky cursor-pointer"><input type="radio" name="kelas" value="8B" class="mr-1"> Kelas 8B</label>
+        </div></div>
+
+      <div><div class="font-extrabold mb-2">1. Bagaimana perasaanmu setelah belajar hari ini?</div>
+        <div class="flex flex-wrap gap-3" id="ref-feel"></div></div>
+
+      <div><div class="font-extrabold mb-2">2. Seberapa paham kamu dengan materi jaringan komputer dan komunikasi data pada ponsel?</div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="ref-paham"></div></div>
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div><label class="font-extrabold block mb-1" for="ref-mudah">3. Bagian yang paling mudah kupahami</label><select id="ref-mudah"></select></div>
+        <div><label class="font-extrabold block mb-1" for="ref-sulit">4. Bagian yang masih sulit bagiku</label><select id="ref-sulit"></select></div>
+      </div>
+
+      <div><label class="font-extrabold block mb-1" for="ref-contoh">5. Tuliskan satu contoh jaringan atau komunikasi data yang kamu temui sehari-hari.</label>
+        <textarea id="ref-contoh" rows="3" maxlength="400" placeholder="Contoh: sinyal ponsel di rumahku lemah saat hujan karena …"></textarea></div>
+
+      <div><label class="font-extrabold block mb-1" for="ref-saran">6. Pesan atau saran untuk pendidik dan pembelajaran berikutnya</label>
+        <textarea id="ref-saran" rows="3" maxlength="400" placeholder="Tuliskan harapanmu"></textarea></div>
+
+      <div id="ref-err" class="hidden callout" style="border-left-color:#e63946;background:#ffe3e5"></div>
+      <button type="submit" class="btn btn-sun text-lg"><i class="fa-solid fa-paper-plane"></i> Kirim Refleksi</button>
+    </form>
+
+    <div id="ref-done" class="hidden text-center py-6">
+      <div class="text-7xl text-amber-500 pop"><i class="fa-solid fa-fire-flame-curved"></i></div>
+      <h3 class="fun text-3xl text-green-900 mt-2">Terima kasih, Pendaki Hebat!</h3>
+      <p class="mb-4">Refleksimu sudah tersimpan. Jika pendidik meminta kode refleksi, salin kode di bawah ini lalu kirimkan kepada beliau.</p>
+      <textarea id="ref-code" rows="3" readonly class="text-xs font-mono"></textarea>
+      <div class="mt-3 flex gap-3 justify-center flex-wrap">
+        <button class="btn btn-forest" id="ref-copy"><i class="fa-solid fa-copy"></i> Salin kode refleksi</button>
+        <button class="btn btn-sky" id="ref-again"><i class="fa-solid fa-pen"></i> Isi refleksi baru</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     TAB 7 : REKAP REFLEKSI (GURU)
+==================================================================== -->
+<section id="tab-rekap" class="tab-panel hidden">
+  <div class="card p-5 sm:p-8">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="text-5xl text-orange-500"><i class="fa-solid fa-clipboard-list"></i></div>
+      <div><h2 class="fun text-3xl sm:text-4xl text-green-900 font-extrabold">Rekap Hasil Refleksi</h2>
+      <p class="text-green-800 font-semibold">Halaman khusus pendidik</p></div>
+    </div>
+
+    <!-- Gerbang PIN -->
+    <div id="rekap-lock" class="max-w-md mx-auto text-center py-6">
+      <div class="text-6xl text-amber-600 mb-2"><i class="fa-solid fa-lock"></i></div>
+      <p class="mb-3 font-semibold">Masukkan PIN pendidik untuk melihat rekap.</p>
+      <input type="text" id="pin-input" placeholder="PIN" autocomplete="off" class="text-center mb-3" style="-webkit-text-security:disc">
+      <div id="pin-err" class="text-red-600 font-bold mb-2 hidden">PIN belum tepat. Coba lagi.</div>
+      <button class="btn btn-forest" id="pin-btn"><i class="fa-solid fa-unlock"></i> Buka Rekap</button>
+    </div>
+
+    <div id="rekap-body" class="hidden">
+      <div id="rekap-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6"></div>
+      <div class="grid lg:grid-cols-2 gap-6 mb-6">
+        <div class="card-wood p-4"><h3 class="fun text-xl mb-2">Bagian yang masih sulit</h3><div id="rekap-sulit"></div></div>
+        <div class="card-wood p-4"><h3 class="fun text-xl mb-2">Sebaran tingkat pemahaman</h3><div id="rekap-paham"></div></div>
+      </div>
+
+      <div class="flex flex-wrap gap-3 items-center mb-3">
+        <label class="font-extrabold" for="rekap-filter">Tampilkan:</label>
+        <select id="rekap-filter" class="!w-auto"><option value="all">Semua kelas</option><option value="8A">Kelas 8A</option><option value="8B">Kelas 8B</option></select>
+        <button class="btn btn-forest" id="rekap-csv"><i class="fa-solid fa-file-csv"></i> Unduh CSV</button>
+        <button class="btn btn-red" id="rekap-clear"><i class="fa-solid fa-trash"></i> Hapus semua</button>
+      </div>
+      <div class="overflow-x-auto rounded-xl border-2 border-amber-200">
+        <table class="tbl text-sm" id="rekap-table"></table>
+      </div>
+
+      <div class="callout callout-blue mt-6">
+        <div class="fun text-lg mb-1"><i class="fa-solid fa-file-import"></i> Gabungkan refleksi dari perangkat murid</div>
+        <p class="text-sm mb-2">Data refleksi tersimpan di peramban perangkat yang digunakan. Jika murid mengisi di perangkatnya masing-masing, minta mereka menyalin <em>kode refleksi</em> lalu tempelkan di sini (satu kode per baris).</p>
+        <textarea id="import-box" rows="3" class="text-xs font-mono" placeholder="Tempel kode refleksi di sini"></textarea>
+        <div class="mt-2 flex gap-3 items-center flex-wrap"><button class="btn btn-sky" id="import-btn"><i class="fa-solid fa-download"></i> Impor kode</button><span id="import-msg" class="font-bold text-green-800"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     TAB 8 : TENTANG
+==================================================================== -->
+<section id="tab-tentang" class="tab-panel hidden">
+  <div class="card p-5 sm:p-8">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="text-5xl text-orange-500"><i class="fa-solid fa-circle-info"></i></div>
+      <div><h2 class="fun text-3xl sm:text-4xl text-green-900 font-extrabold">Tentang Media Ini</h2></div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="card-wood p-5">
+        <div class="text-5xl text-green-800 mb-2"><i class="fa-solid fa-user-tie"></i></div>
+        <h3 class="fun text-2xl">Pengembang</h3>
+        <p class="text-xl font-extrabold text-amber-950">Leonardy Fey Scorpionius</p>
+        <p>Pendidik Informatika</p>
+        <p>SMP Strada Bhakti Mulia</p>
+      </div>
+      <div class="card-wood p-5">
+        <div class="text-5xl text-green-800 mb-2"><i class="fa-solid fa-book"></i></div>
+        <h3 class="fun text-2xl">Sumber Materi</h3>
+        <p><em>Informatika untuk SMP Kelas VIII</em>, Bab 5 “Jaringan Komputer dan Internet”, bagian A (Jaringan Komputer) sampai bagian B (Komunikasi Data pada Ponsel). Penulis bab: Wahyono dan Budiman Saputra. Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi, 2021.</p>
+      </div>
+    </div>
+    <div class="callout callout-green mt-6">
+      <div class="fun text-xl mb-1">Sasaran dan Cakupan</div>
+      <ul class="list-disc ml-6 space-y-1">
+        <li>Murid SMP Kelas 8 (Fase D), mata pelajaran Informatika.</li>
+        <li>Materi: jaringan lokal, internet, konfigurasi jaringan, routing, dan komunikasi data pada ponsel.</li>
+        <li>Media berjalan penuh di peramban, tanpa instalasi. Koneksi internet hanya diperlukan untuk memuat tampilan (Tailwind, ikon, dan font).</li>
+      </ul>
+    </div>
+    <div class="mt-6 text-center text-green-900"><i class="fa-solid fa-mountain text-3xl"></i><p class="fun text-xl mt-1">Selamat mendaki, selamat belajar!</p></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="text-center text-sm text-green-900 pb-8 px-3">
+  <i class="fa-solid fa-tree"></i> Media Pembelajaran Informatika Kelas 8 • Dikembangkan oleh <b>Leonardy Fey Scorpionius</b> <i class="fa-solid fa-tree"></i>
+</footer>
+
+<script>
+/* =====================================================================
+   BAGIAN 0 — KONFIGURASI & UTILITAS
+   ===================================================================== */
+// PIN halaman rekap guru. Ubah sesuai kebutuhan.
+// Catatan: PIN di sisi peramban hanya pembatas ringan, bukan pengaman data.
+const PIN_GURU = "guru123";
+
+// Kunci penyimpanan lokal peramban
+const KEY_REF  = "gede_refleksi_v1";
+const KEY_QUIZ = "gede_kuis_terakhir_v1";
+
+// Pembungkus localStorage yang aman dari galat (mis. mode privat)
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+};
+
+// Mencegah penyisipan HTML dari masukan murid
+function esc(s){
+  return String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+// Mengacak urutan array (Fisher–Yates)
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; }
+  return a;
+}
+const $ = (id) => document.getElementById(id);
+
+/* =====================================================================
+   BAGIAN 1 — NAVIGASI TAB (SPA tanpa reload)
+   ===================================================================== */
+const TABS = [
+  {id:'home',     label:'Home',                 icon:'fa-mountain'},
+  {id:'tujuan',   label:'Tujuan Pembelajaran',  icon:'fa-compass'},
+  {id:'materi',   label:'Materi',               icon:'fa-map-location-dot'},
+  {id:'kuis',     label:'Kuis Interaktif',      icon:'fa-flag-checkered'},
+  {id:'dnd',      label:'Drag and Drop',        icon:'fa-hand-pointer'},
+  {id:'refleksi', label:'Refleksi',             icon:'fa-campground'},
+  {id:'rekap',    label:'Rekap Refleksi (Guru)',icon:'fa-clipboard-list'},
+  {id:'tentang',  label:'Tentang',              icon:'fa-circle-info'}
+];
+let currentTab = 'home';
+let travelTimer = null;
+
+// Membuat tombol navigasi
+function buildNav(){
+  $('nav').innerHTML = TABS.map(t =>
+    `<button class="tabbtn" data-tab="${t.id}" aria-label="${t.label}"><i class="fa-solid ${t.icon}"></i><span>${t.label}</span></button>`
+  ).join('');
+  $('nav').querySelectorAll('.tabbtn').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+}
+
+// Memindahkan pendaki pada jalur sesuai tab aktif
+function moveHiker(){
+  const i = TABS.findIndex(t => t.id === currentTab);
+  const pct = i / (TABS.length - 1) * 94;
+  $('trail-hiker').style.left = pct + '%';
+}
+
+// Berpindah tab dengan efek "perjalanan" singkat
+function showTab(id){
+  if(id === currentTab && !$('tab-'+id).classList.contains('hidden')) return;
+  const t = TABS.find(x => x.id === id);
+  $('travel-text').textContent = 'Mendaki menuju: ' + t.label + '…';
+  $('travel').classList.add('show');
+  clearTimeout(travelTimer);
+  travelTimer = setTimeout(() => {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+    const panel = $('tab-'+id);
+    panel.classList.remove('hidden');
+    panel.classList.remove('panel-enter'); void panel.offsetWidth; panel.classList.add('panel-enter');
+    currentTab = id;
+    document.querySelectorAll('.tabbtn').forEach(b => {
+      const on = b.dataset.tab === id;
+      b.classList.toggle('active', on);
+      if(on){ b.setAttribute('aria-current','page'); b.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'}); }
+      else b.removeAttribute('aria-current');
+    });
+    moveHiker();
+    window.scrollTo({top:0, behavior:'smooth'});
+    if(id === 'rekap') renderRekap();
+    if(id === 'refleksi') prepRefleksi();
+    $('travel').classList.remove('show');
+  }, 420);
+}
+
+/* =====================================================================
+   BAGIAN 2 — HOME & TUJUAN PEMBELAJARAN
+   ===================================================================== */
+// Tujuan pembelajaran (berdasarkan Bab 5 bagian A–B)
+const TUJUAN = [
+  {t:'Menjelaskan pengertian jaringan komputer dan fungsi alamat IP sebagai identitas unik perangkat.', i:'fa-network-wired'},
+  {t:'Membedakan jaringan lokal (LAN) dan jaringan internet berdasarkan jangkauannya.', i:'fa-house-signal'},
+  {t:'Membedakan fungsi switch dan router, serta menentukan apakah dua perangkat berada pada jaringan yang sama.', i:'fa-sitemap'},
+  {t:'Menggambarkan konfigurasi jaringan komputer secara abstrak sebagai node dan link (edge).', i:'fa-diagram-project'},
+  {t:'Menentukan jalur routing terbaik, yaitu jalur terpendek, untuk mengirim data antarperangkat.', i:'fa-route'},
+  {t:'Menjelaskan peran BTS dan faktor-faktor yang memengaruhi kekuatan sinyal ponsel.', i:'fa-tower-cell'}
+];
+function renderTujuan(){
+  $('tp-list').innerHTML = TUJUAN.map((x,n) => `
+    <li class="flex gap-4 items-start card-wood p-4">
+      <div class="shrink-0 w-12 h-12 rounded-full bg-green-700 text-white grid place-items-center fun text-2xl">${n+1}</div>
+      <div class="flex-1"><i class="fa-solid ${x.i} text-green-800 mr-1"></i> ${x.t}</div>
+    </li>`).join('');
+}
+
+/* =====================================================================
+   BAGIAN 3 — MATERI (Pos 1–6 + Puncak)
+   Widget interaktif ditandai dengan data-widget dan diaktifkan oleh initWidgets()
+   ===================================================================== */
+const POS = [
+{ short:'Pos 1', icon:'fa-campground', title:'Pos 1 — Apa Itu Jaringan Komputer?', color:'#2d6a4f',
+  html:`
+  <p class="mb-4">Sebelum mendaki Gunung Gede, setiap pendaki mendaftar di basecamp dan mendapat <b>nomor registrasi</b>. Selama di jalur, para pendaki saling bertukar kabar. Komputer dan ponsel juga begitu: mereka saling terhubung, punya identitas, dan saling bertukar data.</p>
+  <div class="callout callout-green mb-4"><div class="fun text-xl mb-1"><i class="fa-solid fa-lightbulb"></i> Ingat!</div>
+    <b>Jaringan komputer</b> adalah sebuah arsitektur ketika dua atau lebih komputer terhubung satu sama lain dan digunakan untuk <b>berbagi data</b>.</div>
+  <div class="grid sm:grid-cols-2 gap-4 mb-4">
+    <div class="card-wood p-4"><div class="text-3xl text-green-800"><i class="fa-solid fa-screwdriver-wrench"></i></div><b class="fun text-xl">Dibangun dari</b><p>Kombinasi <b>perangkat keras (hardware)</b> dan <b>perangkat lunak (software)</b>.</p></div>
+    <div class="card-wood p-4"><div class="text-3xl text-green-800"><i class="fa-solid fa-id-card"></i></div><b class="fun text-xl">Identitas unik</b><p>Setiap perangkat memiliki <b>alamat IP</b> agar dapat dibedakan dari perangkat lain, seperti nomor registrasi pendaki.</p></div>
+  </div>
+  <h3 class="fun text-2xl mb-2">Dua jenis jaringan berdasarkan jangkauan</h3>
+  <div class="grid sm:grid-cols-2 gap-4">
+    <div class="p-4 rounded-2xl bg-green-100 border-2 border-green-300"><div class="text-3xl text-green-800"><i class="fa-solid fa-house-signal"></i></div><b class="fun text-xl">Jaringan Lokal</b><p>Jangkauan <b>terbatas</b>, misalnya satu rumah, sekolah, atau gedung.</p><p class="text-sm mt-1"><i class="fa-solid fa-person-hiking"></i> Seperti radio antarpendaki dalam satu rombongan.</p></div>
+    <div class="p-4 rounded-2xl bg-sky-100 border-2 border-sky-300"><div class="text-3xl text-sky-800"><i class="fa-solid fa-globe"></i></div><b class="fun text-xl">Jaringan Internet</b><p>Jangkauan <b>sangat luas</b>, bahkan lintas negara.</p><p class="text-sm mt-1"><i class="fa-solid fa-mountain"></i> Seperti kabar dari puncak yang sampai ke seluruh dunia.</p></div>
+  </div>`},
+
+{ short:'Pos 2', icon:'fa-house-signal', title:'Pos 2 — Jaringan Lokal (LAN)', color:'#1d8fd6',
+  html:`
+  <p class="mb-4"><b>Jaringan lokal</b> adalah jaringan komputer, berkabel maupun nirkabel, yang menghubungkan komputer dengan perangkat lain di <b>wilayah terbatas</b> seperti rumah, sekolah, kampus, atau gedung kantor. Jaringan ini juga disebut <b>LAN</b> (<em>Local Area Network</em>). Untuk memakainya, perangkatmu harus terhubung dahulu ke jaringan tersebut.</p>
+  <div class="grid sm:grid-cols-2 gap-4 mb-4">
+    <div class="card-wood p-4"><b class="fun text-xl"><i class="fa-solid fa-2"></i> Dua perangkat</b><p>Cukup dihubungkan langsung dengan kabel atau tanpa kabel.</p></div>
+    <div class="card-wood p-4"><b class="fun text-xl"><i class="fa-solid fa-circle-nodes"></i> Lebih dari dua</b><p>Dibutuhkan perangkat tambahan: <b>switch</b> atau <b>router</b>.</p></div>
+  </div>
+  <h3 class="fun text-2xl mb-2">Switch dan Router, apa bedanya?</h3>
+  <div class="overflow-x-auto mb-4"><table class="tbl">
+    <tr><th>Perangkat</th><th>Kemampuan</th><th>Analogi di gunung</th></tr>
+    <tr><td><b><i class="fa-solid fa-ethernet"></i> Switch</b></td><td>Menghubungkan perangkat pada <b>jaringan yang sama</b>.</td><td>Pos pembagian tenda dalam satu area perkemahan.</td></tr>
+    <tr><td><b><i class="fa-solid fa-route"></i> Router</b></td><td>Menghubungkan perangkat dari <b>dua jaringan berbeda</b>.</td><td>Persimpangan yang menghubungkan jalur Cibodas dan jalur Putri.</td></tr>
+  </table></div>
+  <div class="callout mb-4"><b>Kapan dua jaringan dikatakan berbeda?</b> Jika kelompok alamat IP-nya berbeda. Contoh: <code>192.168.10.1</code> dan <code>192.168.10.2</code> berada pada jaringan yang sama (<code>192.168.10.x</code>), sedangkan <code>192.168.10.1</code> dan <code>192.168.20.2</code> berada pada jaringan yang berbeda.</div>
+  <p class="mb-4"><b>Protokol</b> pada jaringan komputer adalah prosedur atau aturan yang harus ditaati agar dua perangkat dapat berkomunikasi, seperti aturan tanda peluit antarpendaki.</p>
+
+  <div class="card-wood p-4" data-widget="ipcheck">
+    <h3 class="fun text-2xl mb-2"><i class="fa-solid fa-flask text-green-800"></i> Simulasi: Satu jaringan atau berbeda?</h3>
+    <p class="text-sm mb-3">Masukkan dua alamat IP. Pada latihan ini, dua perangkat dianggap sejaringan jika tiga bagian pertamanya sama.</p>
+    <div class="grid sm:grid-cols-2 gap-3 mb-3">
+      <div><label class="font-bold text-sm" for="ip1">Perangkat 1</label><input type="text" id="ip1" value="192.168.10.1" inputmode="decimal"></div>
+      <div><label class="font-bold text-sm" for="ip2">Perangkat 2</label><input type="text" id="ip2" value="192.168.20.2" inputmode="decimal"></div>
+    </div>
+    <button class="btn btn-forest" id="ip-btn"><i class="fa-solid fa-magnifying-glass"></i> Periksa</button>
+    <div id="ip-out" class="mt-3 font-bold" aria-live="polite"></div>
+  </div>`},
+
+{ short:'Pos 3', icon:'fa-globe', title:'Pos 3 — Jaringan Internet', color:'#0e7490',
+  html:`
+  <p class="mb-4"><b>Internet</b> adalah singkatan dari <b>Inter-Network</b>, yaitu jaringan antarjaringan komputer. Jangkauannya jauh lebih luas daripada jaringan lokal: dapat mencakup satu negara atau menghubungkan perangkat di seluruh dunia.</p>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+    <div class="card-wood p-3 text-center"><div class="text-3xl text-green-800"><i class="fa-solid fa-envelope"></i></div><b>Komunikasi langsung</b><br><span class="text-sm">email, chat</span></div>
+    <div class="card-wood p-3 text-center"><div class="text-3xl text-green-800"><i class="fa-solid fa-comments"></i></div><b>Diskusi</b><br><span class="text-sm">milis, grup berita</span></div>
+    <div class="card-wood p-3 text-center"><div class="text-3xl text-green-800"><i class="fa-solid fa-earth-asia"></i></div><b>Sumber informasi</b><br><span class="text-sm">World Wide Web</span></div>
+    <div class="card-wood p-3 text-center"><div class="text-3xl text-green-800"><i class="fa-solid fa-terminal"></i></div><b>Remote login</b><br><span class="text-sm">Telnet</span></div>
+    <div class="card-wood p-3 text-center"><div class="text-3xl text-green-800"><i class="fa-solid fa-file-arrow-up"></i></div><b>Lalu lintas berkas</b><br><span class="text-sm">FTP</span></div>
+  </div>
+  <div class="callout callout-blue mb-4"><div class="fun text-xl mb-1"><i class="fa-solid fa-language"></i> TCP/IP</div>
+  <b>TCP/IP</b> adalah standar teknologi pendukung yang dipakai secara global. Protokol ini mengatur bagaimana sebuah aplikasi berkomunikasi dalam suatu jaringan lewat pertukaran paket. Aplikasi yang berjalan di atas protokol disebut <b>aplikasi client</b>.</div>
+  <h3 class="fun text-2xl mb-2"><i class="fa-solid fa-backpack text-amber-700"></i> Perlengkapan agar terhubung ke internet</h3>
+  <div class="grid sm:grid-cols-3 gap-3">
+    <div class="p-4 rounded-2xl bg-amber-100 border-2 border-amber-300 text-center"><div class="text-4xl text-amber-800"><i class="fa-solid fa-computer"></i></div><b>Dukungan hardware</b><p class="text-sm">perangkat dan kabel atau modul nirkabel</p></div>
+    <div class="p-4 rounded-2xl bg-green-100 border-2 border-green-300 text-center"><div class="text-4xl text-green-800"><i class="fa-solid fa-code"></i></div><b>Dukungan software</b><p class="text-sm">sistem dan aplikasi pendukung</p></div>
+    <div class="p-4 rounded-2xl bg-sky-100 border-2 border-sky-300 text-center"><div class="text-4xl text-sky-800"><i class="fa-solid fa-file-signature"></i></div><b>Terdaftar di ISP</b><p class="text-sm"><em>Internet Service Provider</em>, penyedia layanan internet</p></div>
+  </div>`},
+
+{ short:'Pos 4', icon:'fa-diagram-project', title:'Pos 4 — Konfigurasi Jaringan: Node dan Link', color:'#7c3aed',
+  html:`
+  <p class="mb-4">Ada dua komponen utama pada sebuah jaringan komputer:</p>
+  <div class="grid sm:grid-cols-2 gap-4 mb-4">
+    <div class="card-wood p-4"><div class="text-3xl text-purple-800"><i class="fa-solid fa-circle-dot"></i></div><b class="fun text-xl">Node</b><p>Titik atau perangkat yang dapat <b>menghasilkan</b>, <b>menerima</b>, atau keduanya dalam jaringan. Contoh: komputer, ponsel, switch, router.</p><p class="text-sm"><i class="fa-solid fa-flag"></i> Seperti pos-pos di jalur pendakian.</p></div>
+    <div class="card-wood p-4"><div class="text-3xl text-purple-800"><i class="fa-solid fa-link"></i></div><b class="fun text-xl">Link (edge)</b><p>Jalur transmisi data antar-node. Kadang disebut juga <b>edge</b>.</p><p class="text-sm"><i class="fa-solid fa-shoe-prints"></i> Seperti jalan setapak antarpos.</p></div>
+  </div>
+  <p class="mb-3">Karena itu, jaringan dapat digambarkan secara abstrak sebagai hubungan antara node dan edge. <b>Switch</b> digambarkan sebagai node yang terhubung ke banyak node lain, sedangkan komputer, laptop, atau ponsel hanya terhubung ke satu perangkat. Dalam hal ini, switch berfungsi sebagai <b>node penghubung</b>.</p>
+
+  <div class="card-wood p-4" data-widget="topology">
+    <h3 class="fun text-xl mb-2">Contoh gambar abstrak jaringan (topologi bintang)</h3>
+    <svg viewBox="0 0 520 260" class="w-full h-auto" role="img" aria-label="Switch di tengah terhubung ke empat perangkat">
+      <g stroke="#8d5a2b" stroke-width="5" stroke-linecap="round">
+        <line x1="260" y1="130" x2="70" y2="50"/><line x1="260" y1="130" x2="70" y2="210"/>
+        <line x1="260" y1="130" x2="450" y2="50"/><line x1="260" y1="130" x2="450" y2="210"/>
+      </g>
+      <g>
+        <circle cx="260" cy="130" r="34" fill="#7c3aed"/><text x="260" y="136" text-anchor="middle" fill="#fff" font-size="16" font-weight="800">Switch</text>
+        <circle cx="70" cy="50" r="26" fill="#2d6a4f"/><text x="70" y="55" text-anchor="middle" fill="#fff" font-size="13" font-weight="800">Laptop</text>
+        <circle cx="70" cy="210" r="26" fill="#2d6a4f"/><text x="70" y="215" text-anchor="middle" fill="#fff" font-size="13" font-weight="800">PC</text>
+        <circle cx="450" cy="50" r="26" fill="#2d6a4f"/><text x="450" y="55" text-anchor="middle" fill="#fff" font-size="13" font-weight="800">Ponsel</text>
+        <circle cx="450" cy="210" r="26" fill="#2d6a4f"/><text x="450" y="215" text-anchor="middle" fill="#fff" font-size="13" font-weight="800">Printer</text>
+      </g>
+    </svg>
+    <p class="text-sm"><b>Tantangan (JKI-K8-01):</b> gambarlah ulang abstraksi seperti ini pada kertas, lalu ubah menjadi gambar konfigurasi jaringan yang lengkap dengan perangkatnya.</p>
+  </div>`},
+
+{ short:'Pos 5', icon:'fa-route', title:'Pos 5 — Routing: Memilih Jalur Terbaik', color:'#e76f51',
+  html:`
+  <p class="mb-3"><b>Routing</b> adalah mekanisme pengiriman paket data dari satu perangkat ke perangkat lain. Sebuah <b>router</b> menyimpan <b>tabel routing</b> berisi informasi jalur yang dilalui data. Seperti pemandu yang tahu jalur tercepat dari Cibodas ke puncak.</p>
+  <div class="callout mb-4"><b>Agar routing berjalan, perlu diketahui:</b>
+    <ol class="list-decimal ml-6"><li>alamat perangkat tujuan,</li><li>alamat perangkat asal,</li><li>rute terbaik, yaitu biasanya <b>jalur terpendek</b>.</li></ol>
+    Jika ada lebih dari satu jalur terbaik, router biasanya memilih salah satunya secara acak. Untuk jaringan yang rumit, dipakai algoritma <em>shortest path</em> seperti yang dipelajari pada Berpikir Komputasional.</div>
+
+  <div class="card-wood p-4" data-widget="route">
+    <h3 class="fun text-2xl mb-1"><i class="fa-solid fa-paper-plane text-orange-700"></i> Simulasi: Kirim data dari Komputer B ke Komputer D</h3>
+    <p class="text-sm mb-2">Anggap setiap perangkat terhubung dengan kabel sepanjang 1 meter. Pilih sebuah jalur, lalu lihat paket data berjalan. Jalur mana yang akan dipilih router?</p>
+    <svg id="rt-svg" viewBox="0 0 580 270" class="w-full h-auto bg-white/60 rounded-2xl" role="img" aria-label="Diagram jaringan Komputer B, Router 1 sampai 4, dan Komputer D"></svg>
+    <div class="flex flex-wrap gap-2 my-3" id="rt-btns"></div>
+    <div id="rt-out" class="font-bold" aria-live="polite">Pilih salah satu jalur di atas.</div>
+  </div>
+  <div class="overflow-x-auto mt-4"><table class="tbl">
+    <tr><th>Warna jalur</th><th>Jalur yang dilalui</th><th>Jarak</th></tr>
+    <tr><td><span class="badge bg-red-100 text-red-800">Merah</span></td><td>B – Router 1 – Router 2 – Router 3 – Router 4 – D</td><td>5 m</td></tr>
+    <tr><td><span class="badge bg-teal-100 text-teal-800">Hijau</span></td><td>B – Router 1 – Router 3 – Router 4 – D</td><td>4 m</td></tr>
+    <tr><td><span class="badge bg-blue-100 text-blue-800">Biru</span></td><td>B – Router 1 – Router 4 – D</td><td>3 m</td></tr>
+  </table></div>`},
+
+{ short:'Pos 6', icon:'fa-tower-cell', title:'Pos 6 — Komunikasi Data pada Ponsel', color:'#d62828',
+  html:`
+  <p class="mb-3"><b>Komunikasi data</b> adalah mekanisme pengiriman dan penerimaan data dari satu perangkat ke perangkat lain. Saat kamu mengirim SMS, menelepon, memakai internet, atau mengirim dokumen lewat ponsel, ada komunikasi data antara ponsel pengirim dan ponsel penerima.</p>
+  <div class="grid sm:grid-cols-2 gap-4 mb-4">
+    <div class="card-wood p-4"><div class="text-4xl text-red-700"><i class="fa-solid fa-tower-cell"></i></div><b class="fun text-xl">BTS (Base Transceiver Station)</b><p>Infrastruktur telekomunikasi yang menjadi <b>pemancar dan penerima sinyal</b> ponsel, memfasilitasi komunikasi nirkabel antara perangkat dan jaringan.</p></div>
+    <div class="card-wood p-4"><div class="text-4xl text-red-700"><i class="fa-solid fa-mobile-screen-button"></i></div><b class="fun text-xl">Mobile phone</b><p>Ponsel dilayani BTS terdekat. Saat kamu bergerak, layanan <b>berpindah otomatis</b> ke BTS di wilayah berikutnya. Itu sebabnya disebut <em>mobile</em> phone.</p></div>
+  </div>
+  <h3 class="fun text-2xl mb-2">Lima hal yang memengaruhi kekuatan sinyal</h3>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+    <div class="p-3 rounded-2xl bg-green-100 border-2 border-green-300"><b><i class="fa-solid fa-ruler-horizontal"></i> 1. Jarak dari BTS</b><p class="text-sm">Makin dekat, makin kuat. Makin jauh, makin lemah.</p></div>
+    <div class="p-3 rounded-2xl bg-amber-100 border-2 border-amber-300"><b><i class="fa-solid fa-building"></i> 2. Material bangunan</b><p class="text-sm">Beton dan baja menghalangi sinyal, misalnya di basement.</p></div>
+    <div class="p-3 rounded-2xl bg-stone-100 border-2 border-stone-300"><b><i class="fa-solid fa-mountain"></i> 3. Halangan</b><p class="text-sm">Tembok, besi, dan bangunan di antara ponsel dan BTS melemahkan sinyal.</p></div>
+    <div class="p-3 rounded-2xl bg-sky-100 border-2 border-sky-300"><b><i class="fa-solid fa-cloud-rain"></i> 4. Cuaca</b><p class="text-sm">Sinyal biasanya lebih baik saat cerah daripada saat hujan atau berkabut.</p></div>
+    <div class="p-3 rounded-2xl bg-rose-100 border-2 border-rose-300"><b><i class="fa-solid fa-users"></i> 5. Pengguna lain</b><p class="text-sm">BTS hanya mampu melayani jumlah koneksi tertentu sekaligus.</p></div>
+    <div class="p-3 rounded-2xl bg-violet-100 border-2 border-violet-300"><b><i class="fa-solid fa-signal"></i> Indikator bar</b><p class="text-sm">Satu bar berarti BTS jauh. Empat bar berarti BTS sangat dekat.</p></div>
+  </div>
+
+  <div class="card-wood p-4" data-widget="signal">
+    <h3 class="fun text-2xl mb-2"><i class="fa-solid fa-flask text-red-700"></i> Simulasi: Seberapa kuat sinyalmu?</h3>
+    <div class="relative h-28 rounded-2xl overflow-hidden mb-3" style="background:linear-gradient(180deg,#bfe9fb,#e8f9e9)">
+      <div class="absolute left-3 bottom-2 text-5xl text-red-700"><i class="fa-solid fa-tower-cell"></i></div>
+      <div id="sg-phone" class="absolute bottom-2 text-4xl text-green-900 transition-all duration-300"><i class="fa-solid fa-mobile-screen-button"></i></div>
+      <div id="sg-weather" class="absolute right-3 top-2 text-3xl text-sky-600"><i class="fa-solid fa-sun text-orange-400"></i></div>
+    </div>
+    <label class="font-bold block mb-1" for="sg-dist">Jarak ponsel ke BTS: <span id="sg-dval">1</span> m</label>
+    <input type="range" id="sg-dist" min="0" max="10" step="0.5" value="1" class="w-full accent-green-700 mb-3">
+    <div class="flex flex-wrap gap-3 mb-3">
+      <label class="badge bg-amber-100 text-amber-900 cursor-pointer text-base"><input type="checkbox" id="sg-beton"> Di basement / dinding beton</label>
+      <label class="badge bg-sky-100 text-sky-900 cursor-pointer text-base"><input type="checkbox" id="sg-hujan"> Hujan atau berkabut</label>
+      <label class="badge bg-rose-100 text-rose-900 cursor-pointer text-base"><input type="checkbox" id="sg-ramai"> Banyak pengguna di area BTS</label>
+    </div>
+    <div class="flex items-end gap-4">
+      <div class="flex items-end gap-1 h-14" id="sg-bars" aria-hidden="true"></div>
+      <div id="sg-out" class="font-bold" aria-live="polite"></div>
+    </div>
+    <p class="text-xs mt-2">Catatan latihan buku (JKI-K8-03): di ruang terbuka tanpa halangan, jarak HP–BTS kurang dari 3 m dianggap sinyal kuat.</p>
+  </div>`},
+
+{ short:'Puncak', icon:'fa-flag', title:'Puncak — Ringkasan Pendakian', color:'#ff9f1c',
+  html:`
+  <div class="text-center mb-4"><div class="text-7xl text-orange-500 bob"><i class="fa-solid fa-flag"></i></div><p class="fun text-2xl">Selamat! Kalian tiba di puncak Gunung Gede!</p></div>
+  <div class="grid sm:grid-cols-2 gap-3 mb-4">
+    <div class="p-4 rounded-2xl bg-green-100 border-2 border-green-300"><b><i class="fa-solid fa-check text-green-700"></i> Jaringan komputer</b> menghubungkan dua perangkat atau lebih untuk berbagi data; tiap perangkat punya alamat IP.</div>
+    <div class="p-4 rounded-2xl bg-sky-100 border-2 border-sky-300"><b><i class="fa-solid fa-check text-green-700"></i> Jaringan lokal</b> berjangkauan terbatas; <b>internet</b> adalah jaringan antarjaringan yang jangkauannya luas.</div>
+    <div class="p-4 rounded-2xl bg-amber-100 border-2 border-amber-300"><b><i class="fa-solid fa-check text-green-700"></i> Switch</b> menghubungkan perangkat pada jaringan yang sama; <b>router</b> menghubungkan dua jaringan berbeda.</div>
+    <div class="p-4 rounded-2xl bg-violet-100 border-2 border-violet-300"><b><i class="fa-solid fa-check text-green-700"></i> Node dan link</b> adalah komponen utama jaringan dan dapat digambar sebagai graf.</div>
+    <div class="p-4 rounded-2xl bg-orange-100 border-2 border-orange-300"><b><i class="fa-solid fa-check text-green-700"></i> Routing</b> memilih jalur terbaik, biasanya jalur terpendek, untuk mengirim paket data.</div>
+    <div class="p-4 rounded-2xl bg-rose-100 border-2 border-rose-300"><b><i class="fa-solid fa-check text-green-700"></i> BTS</b> melayani ponsel; sinyal dipengaruhi jarak, material, halangan, cuaca, dan jumlah pengguna.</div>
+  </div>
+  <div class="text-center flex flex-wrap gap-3 justify-center">
+    <button class="btn btn-sun text-lg" onclick="showTab('kuis')"><i class="fa-solid fa-flag-checkered"></i> Uji dengan Kuis</button>
+    <button class="btn btn-forest text-lg" onclick="showTab('dnd')"><i class="fa-solid fa-hand-pointer"></i> Main Drag and Drop</button>
+  </div>`}
+];
+
+let posIdx = 0;
+
+// Kartu peta pos di halaman Home
+function renderHomePos(){
+  $('home-pos').innerHTML = POS.slice(0,6).map((p,i) => `
+    <button class="card text-left p-4 hover:-translate-y-1 transition" onclick="openMateri(${i})" style="border-color:${p.color}33">
+      <div class="flex items-center gap-3">
+        <div class="w-14 h-14 rounded-2xl grid place-items-center text-white text-2xl shrink-0" style="background:${p.color}"><i class="fa-solid ${p.icon}"></i></div>
+        <div><div class="text-xs font-extrabold" style="color:${p.color}">${p.short.toUpperCase()}</div><div class="fun text-lg leading-tight">${p.title.split('—')[1].trim()}</div></div>
+      </div>
+    </button>`).join('');
+}
+
+// Membuka materi pada pos tertentu
+function openMateri(i){ posIdx = i; renderPos(); showTab('materi'); }
+
+// Menampilkan satu pos
+function renderPos(){
+  $('pos-nav').innerHTML = POS.map((p,i) => `
+    <button role="tab" aria-selected="${i===posIdx}" class="btn ${i===posIdx?'btn-sun':'btn-forest'} !px-4 !py-2 shrink-0" data-pos="${i}"><i class="fa-solid ${p.icon}"></i> ${p.short}</button>`).join('');
+  $('pos-nav').querySelectorAll('[data-pos]').forEach(b => b.addEventListener('click', () => { posIdx = +b.dataset.pos; renderPos(); }));
+  const p = POS[posIdx];
+  $('pos-content').innerHTML = `
+    <div class="panel-enter">
+      <div class="flex items-center gap-3 mb-4 p-3 rounded-2xl text-white" style="background:${p.color}">
+        <div class="text-4xl"><i class="fa-solid ${p.icon}"></i></div>
+        <h2 class="fun text-2xl sm:text-3xl font-extrabold">${p.title}</h2>
+      </div>
+      ${p.html}
+    </div>`;
+  $('pos-prev').disabled = posIdx === 0;
+  $('pos-next').disabled = posIdx === POS.length - 1;
+  initWidgets();
+}
+$('pos-prev').addEventListener('click', () => { if(posIdx>0){ posIdx--; renderPos(); window.scrollTo({top:0,behavior:'smooth'}); } });
+$('pos-next').addEventListener('click', () => { if(posIdx<POS.length-1){ posIdx++; renderPos(); window.scrollTo({top:0,behavior:'smooth'}); } });
+
+/* ---------- Widget interaktif di dalam materi ---------- */
+function initWidgets(){
+  // === Widget 1: pemeriksa alamat IP ===
+  if(document.querySelector('[data-widget="ipcheck"]')){
+    $('ip-btn').addEventListener('click', () => {
+      const re = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+      const a = $('ip1').value.trim().match(re), b = $('ip2').value.trim().match(re);
+      const ok = m => m && m.slice(1).every(n => +n >= 0 && +n <= 255);
+      const out = $('ip-out');
+      if(!ok(a) || !ok(b)){ out.innerHTML = '<span class="text-red-700"><i class="fa-solid fa-triangle-exclamation"></i> Alamat IP belum benar. Gunakan format empat angka 0–255 yang dipisah titik, misalnya 192.168.10.1.</span>'; return; }
+      const same = a[1]===b[1] && a[2]===b[2] && a[3]===b[3];
+      out.innerHTML = same
+        ? `<span class="text-green-800"><i class="fa-solid fa-circle-check"></i> Sejaringan (${a[1]}.${a[2]}.${a[3]}.x). Cukup dihubungkan dengan <b>switch</b>.</span>`
+        : `<span class="text-orange-700"><i class="fa-solid fa-circle-exclamation"></i> Jaringan berbeda (${a[1]}.${a[2]}.${a[3]}.x dan ${b[1]}.${b[2]}.${b[3]}.x). Dibutuhkan <b>router</b> agar keduanya dapat berkomunikasi.</span>`;
+    });
+  }
+
+  // === Widget 2: simulasi routing ===
+  if(document.querySelector('[data-widget="route"]')) initRoute();
+
+  // === Widget 3: simulasi sinyal ponsel ===
+  if(document.querySelector('[data-widget="signal"]')) initSignal();
+}
+
+// Data graf routing sesuai Tabel 5.1 pada buku
+const RT_NODES = {
+  B:{x:55, y:135, label:'Komputer B', type:'pc'},
+  R1:{x:175,y:135, label:'Router 1', type:'r'},
+  R2:{x:285,y:50,  label:'Router 2', type:'r'},
+  R3:{x:420,y:50,  label:'Router 3', type:'r'},
+  R4:{x:420,y:220, label:'Router 4', type:'r'},
+  D:{x:530, y:135, label:'Komputer D', type:'pc'}
+};
+const RT_EDGES = [['B','R1'],['R1','R2'],['R2','R3'],['R3','R4'],['R1','R3'],['R1','R4'],['R4','D']];
+const RT_PATHS = [
+  {name:'Merah', color:'#e63946', nodes:['B','R1','R2','R3','R4','D']},
+  {name:'Hijau', color:'#2a9d8f', nodes:['B','R1','R3','R4','D']},
+  {name:'Biru',  color:'#1d4ed8', nodes:['B','R1','R4','D']}
+];
+let rtTimer = null;
+
+function initRoute(){
+  const svg = $('rt-svg');
+  const N = RT_NODES;
+  // Garis penghubung (link)
+  let h = RT_EDGES.map(([a,b]) => `<line class="rt-edge" id="e-${a}-${b}" x1="${N[a].x}" y1="${N[a].y}" x2="${N[b].x}" y2="${N[b].y}"/>`).join('');
+  // Node (perangkat)
+  h += Object.entries(N).map(([k,n]) => n.type==='pc'
+    ? `<g class="rt-node"><rect x="${n.x-30}" y="${n.y-22}" width="60" height="44" rx="10" fill="#2d6a4f"/><text x="${n.x}" y="${n.y+5}" text-anchor="middle" fill="#fff" font-size="12" font-weight="800">${n.label.replace('Komputer ','Komp. ')}</text></g>`
+    : `<g class="rt-node"><circle cx="${n.x}" cy="${n.y}" r="27" fill="#8d5a2b"/><text x="${n.x}" y="${n.y+4}" text-anchor="middle" fill="#fff" font-size="12" font-weight="800">${n.label.replace('Router ','R')}</text></g>`).join('');
+  // Paket data yang bergerak
+  h += `<g id="rt-pkt" style="transform:translate(${N.B.x}px,${N.B.y}px);transition:transform .55s ease;opacity:0"><circle r="13" fill="#ff9f1c" stroke="#fff" stroke-width="3"/><text y="5" text-anchor="middle" font-size="14" fill="#3a2200" font-weight="800">✉</text></g>`;
+  svg.innerHTML = h;
+
+  $('rt-btns').innerHTML = RT_PATHS.map((p,i) =>
+    `<button class="btn" style="background:${p.color};color:#fff" data-p="${i}"><i class="fa-solid fa-route"></i> Jalur ${p.name}</button>`).join('')
+    + `<button class="btn btn-earth" id="rt-reset"><i class="fa-solid fa-rotate-left"></i> Ulangi</button>`;
+  $('rt-btns').querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => runRoute(+b.dataset.p)));
+  $('rt-reset').addEventListener('click', resetRoute);
+}
+function resetRoute(){
+  clearInterval(rtTimer);
+  RT_EDGES.forEach(([a,b]) => { const e = $(`e-${a}-${b}`); e.style.stroke=''; e.style.strokeWidth=''; });
+  const pk = $('rt-pkt'); pk.style.opacity = 0; pk.style.transform = `translate(${RT_NODES.B.x}px,${RT_NODES.B.y}px)`;
+  $('rt-out').textContent = 'Pilih salah satu jalur di atas.';
+}
+// Menjalankan animasi paket pada jalur terpilih
+function runRoute(i){
+  resetRoute();
+  const p = RT_PATHS[i], pk = $('rt-pkt');
+  // Warnai link yang dilalui
+  for(let k=0;k<p.nodes.length-1;k++){
+    const a=p.nodes[k], b=p.nodes[k+1];
+    const e = $(`e-${a}-${b}`) || $(`e-${b}-${a}`);
+    e.style.stroke = p.color; e.style.strokeWidth = 9;
+  }
+  pk.style.opacity = 1;
+  let step = 0;
+  $('rt-out').innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Paket data sedang dikirim lewat jalur ${p.name}…`;
+  rtTimer = setInterval(() => {
+    step++;
+    if(step >= p.nodes.length){
+      clearInterval(rtTimer);
+      const dist = p.nodes.length - 1;
+      const best = dist === 3;
+      $('rt-out').innerHTML = best
+        ? `<span class="text-green-800"><i class="fa-solid fa-circle-check"></i> Jalur ${p.name}: jarak <b>${dist} m</b>. Inilah jalur terpendek, jadi router akan memilih jalur ini.</span>`
+        : `<span class="text-orange-700"><i class="fa-solid fa-circle-exclamation"></i> Jalur ${p.name}: jarak <b>${dist} m</b>. Paket sampai, tetapi masih ada jalur yang lebih pendek (3 m). Coba jalur lain!</span>`;
+      return;
+    }
+    const n = RT_NODES[p.nodes[step]];
+    pk.style.transform = `translate(${n.x}px,${n.y}px)`;
+  }, 650);
+}
+
+// Simulasi kekuatan sinyal ponsel
+function initSignal(){
+  const d = $('sg-dist');
+  $('sg-bars').innerHTML = [18,28,38,52].map(h => `<div class="bar" style="height:${h}px"></div>`).join('');
+  const update = () => {
+    const dist = +d.value;
+    $('sg-dval').textContent = dist;
+    $('sg-phone').style.left = (14 + dist * 7.4) + '%';
+    let bars = 4 - Math.floor(dist / 3);   // 0–2,9 m = 4 bar, dst.
+    const beton = $('sg-beton').checked, hujan = $('sg-hujan').checked, ramai = $('sg-ramai').checked;
+    const penalti = [beton,hujan,ramai].filter(Boolean).length;
+    bars = Math.max(0, bars - penalti);
+    document.querySelectorAll('#sg-bars .bar').forEach((el,i) => {
+      el.classList.toggle('on', i < bars);
+      el.classList.toggle('warn', bars === 2);
+      el.classList.toggle('bad', bars <= 1);
+    });
+    $('sg-weather').innerHTML = hujan ? '<i class="fa-solid fa-cloud-showers-heavy"></i>' : '<i class="fa-solid fa-sun text-orange-400"></i>';
+    const label = ['Tidak ada sinyal','Sinyal lemah','Sinyal sedang','Sinyal cukup kuat','Sinyal sangat kuat'][bars];
+    const sebab = [];
+    if(dist >= 3) sebab.push('jarak ke BTS cukup jauh');
+    if(beton) sebab.push('terhalang beton atau baja');
+    if(hujan) sebab.push('cuaca buruk');
+    if(ramai) sebab.push('BTS sedang ramai pengguna');
+    $('sg-out').innerHTML = `${label} (${bars} bar)` + (sebab.length ? `<br><span class="text-sm font-semibold">Penyebab melemah: ${sebab.join(', ')}.</span>` : `<br><span class="text-sm font-semibold">Kondisi terbaik: dekat BTS tanpa halangan.</span>`);
+  };
+  ['input','change'].forEach(ev => { d.addEventListener(ev, update); ['sg-beton','sg-hujan','sg-ramai'].forEach(id => $(id).addEventListener(ev, update)); });
+  update();
+}
+
+/* =====================================================================
+   BAGIAN 4 — KUIS INTERAKTIF
+   ===================================================================== */
+const BANK_KUIS = [
+ {q:'Dua perangkat atau lebih yang saling terhubung untuk berbagi data disebut …', a:'Jaringan komputer', o:['Sistem operasi','Perangkat lunak aplikasi','Basis data'], why:'Jaringan komputer adalah arsitektur ketika dua atau lebih komputer terhubung untuk berbagi data.'},
+ {q:'Identitas unik yang dimiliki setiap perangkat dalam jaringan komputer disebut …', a:'Alamat IP', o:['Nama berkas','Kata sandi','Ekstensi'], why:'Alamat IP membedakan satu perangkat dengan perangkat lain, seperti nomor registrasi pendaki.'},
+ {q:'Jaringan lokal (LAN) biasanya mencakup …', a:'Area terbatas seperti rumah, sekolah, atau gedung', o:['Seluruh dunia','Hanya satu ponsel','Hanya satu negara saja'], why:'LAN berjangkauan terbatas. Jaringan berjangkauan luas disebut internet.'},
+ {q:'Perangkat yang dapat menghubungkan perangkat dari dua jaringan yang berbeda adalah …', a:'Router', o:['Switch','Monitor','Mouse'], why:'Switch hanya menghubungkan perangkat pada jaringan yang sama, sedangkan router dapat menghubungkan dua jaringan berbeda.'},
+ {q:'Perangkat dengan IP 192.168.10.1 dan 192.168.10.2 berada pada …', a:'Jaringan yang sama (192.168.10.x)', o:['Dua jaringan yang berbeda','Jaringan internet saja','Jaringan yang tidak dapat ditentukan'], why:'Tiga bagian pertama alamatnya sama, sehingga keduanya sejaringan.'},
+ {q:'IP 192.168.10.1 dan 192.168.20.2 menunjukkan bahwa kedua perangkat berada pada …', a:'Jaringan yang berbeda', o:['Jaringan yang sama','Komputer yang sama','Satu switch yang sama saja'], why:'Kelompok alamat IP-nya berbeda (10 dan 20), sehingga dibutuhkan router.'},
+ {q:'Kata “Internet” berasal dari Inter-Network, artinya …', a:'Jaringan antarjaringan komputer', o:['Jaringan di dalam satu ruangan','Kabel listrik','Mesin pencari'], why:'Internet menghubungkan banyak jaringan komputer di seluruh dunia.'},
+ {q:'Syarat agar komputer dapat terhubung ke internet adalah …', a:'Ada dukungan hardware, software, dan terdaftar di ISP', o:['Hanya memiliki mouse','Cukup memasang antivirus','Tidak ada syarat apa pun'], why:'Komputer memerlukan hardware, software, dan layanan dari penyedia internet (ISP).'},
+ {q:'Dalam konfigurasi jaringan, titik atau perangkat yang dapat menghasilkan atau menerima data disebut …', a:'Node', o:['Link','Edge','Protokol'], why:'Node adalah titik atau perangkat. Link (edge) adalah jalur di antara node.'},
+ {q:'Jalur B–R1–R4–D berjarak 3 m, sedangkan jalur lain berjarak 4 m dan 5 m. Jalur yang dipilih routing adalah …', a:'Jalur terpendek (3 m)', o:['Jalur terpanjang (5 m)','Jalur yang melewati paling banyak router','Jalur yang berwarna merah'], why:'Routing memilih rute terbaik, yaitu biasanya jalur terpendek.'},
+ {q:'Ponsel akan menerima sinyal dari BTS yang …', a:'Jaraknya paling dekat', o:['Jaraknya paling jauh','Warnanya paling tinggi','Selalu sama walau ponsel berpindah'], why:'Ponsel dilayani BTS terdekat dan berpindah otomatis ketika bergerak ke wilayah BTS lain.'},
+ {q:'Mengapa sinyal ponsel melemah di basement?', a:'Terhalang dinding beton atau baja', o:['BTS terlalu dekat','Layar ponsel terlalu terang','Ponsel terlalu ringan'], why:'Beton dan baja sangat dapat menghalangi sinyal seluler.'}
+];
+let qz = {list:[], i:0, score:0, locked:false};
+
+function startQuiz(){
+  qz.list = shuffle(BANK_KUIS).map(x => ({...x, opts: shuffle([x.a, ...x.o])}));
+  qz.i = 0; qz.score = 0; qz.locked = false;
+  renderQ();
+}
+function renderQuizIntro(){
+  const last = store.get(KEY_QUIZ, null);
+  $('quiz-box').innerHTML = `
+    <div class="text-center py-4">
+      <div class="text-7xl text-green-700 bob"><i class="fa-solid fa-person-hiking"></i></div>
+      <p class="text-xl my-3">Ada <b>${BANK_KUIS.length} pertanyaan</b> dari materi Pos 1 sampai Pos 6. Setiap jawaban benar membuat pendakimu naik satu langkah.</p>
+      ${last ? `<p class="badge bg-amber-100 text-amber-900 mb-3">Skor terakhirmu: ${last.skor}/${last.total}</p><br>` : ''}
+      <button class="btn btn-sun text-lg" id="quiz-start"><i class="fa-solid fa-play"></i> Mulai Mendaki</button>
+    </div>`;
+  $('quiz-start').addEventListener('click', startQuiz);
+}
+function renderQ(){
+  const n = qz.list.length, q = qz.list[qz.i];
+  const pct = qz.i / n * 100;
+  qz.locked = false;
+  $('quiz-box').innerHTML = `
+    <div class="mb-5">
+      <div class="flex justify-between text-sm font-extrabold mb-1"><span>Pertanyaan ${qz.i+1} dari ${n}</span><span><i class="fa-solid fa-star text-amber-500"></i> Skor: ${qz.score}</span></div>
+      <div class="relative h-4 rounded-full bg-green-100 border-2 border-green-200">
+        <div class="h-full rounded-full bg-green-600 transition-all duration-500" style="width:${pct}%"></div>
+        <div class="absolute -top-4 text-2xl text-orange-500 transition-all duration-500" style="left:calc(${pct}% - 12px)"><i class="fa-solid fa-person-hiking"></i></div>
+        <div class="absolute -top-5 right-0 text-xl text-orange-500"><i class="fa-solid fa-flag"></i></div>
+      </div>
+    </div>
+    <div class="panel-enter">
+      <h3 class="fun text-2xl sm:text-3xl mb-4">${q.q}</h3>
+      <div class="grid gap-3" id="q-opts">
+        ${q.opts.map((o,k) => `<button class="text-left card-wood p-4 font-bold text-lg hover:-translate-y-1 transition" data-o="${k}"><span class="badge bg-green-700 text-white mr-2">${String.fromCharCode(65+k)}</span>${o}</button>`).join('')}
+      </div>
+      <div id="q-fb" class="mt-4" aria-live="polite"></div>
+    </div>`;
+  $('q-opts').querySelectorAll('[data-o]').forEach(b => b.addEventListener('click', () => answerQ(+b.dataset.o)));
+}
+function answerQ(k){
+  if(qz.locked) return; qz.locked = true;
+  const q = qz.list[qz.i], chosen = q.opts[k], ok = chosen === q.a;
+  if(ok) qz.score++;
+  $('q-opts').querySelectorAll('[data-o]').forEach((b,idx) => {
+    b.disabled = true;
+    if(q.opts[idx] === q.a){ b.style.background = '#b7efc5'; b.style.borderColor = '#2d6a4f'; }
+    else if(idx === k){ b.style.background = '#ffc9c9'; b.style.borderColor = '#e63946'; b.classList.add('shake'); }
+  });
+  const last = qz.i === qz.list.length - 1;
+  $('q-fb').innerHTML = `
+    <div class="callout ${ok?'callout-green':''} pop">
+      <div class="fun text-xl">${ok ? '<i class="fa-solid fa-circle-check text-green-700"></i> Tepat sekali! Naik satu langkah.' : '<i class="fa-solid fa-circle-xmark text-red-600"></i> Belum tepat. Jawaban yang benar: <b>' + esc(q.a) + '</b>'}</div>
+      <p>${q.why}</p>
+    </div>
+    <div class="mt-3"><button class="btn btn-sun" id="q-next">${last ? '<i class="fa-solid fa-flag"></i> Lihat hasil' : 'Lanjut <i class="fa-solid fa-arrow-right"></i>'}</button></div>`;
+  $('q-next').addEventListener('click', () => { if(last) finishQuiz(); else { qz.i++; renderQ(); } });
+}
+function finishQuiz(){
+  const n = qz.list.length, s = qz.score, pct = Math.round(s/n*100);
+  store.set(KEY_QUIZ, {skor:s, total:n, waktu:Date.now()});
+  let medal, msg, col;
+  if(pct >= 85){ medal='fa-flag'; msg='Pendaki Puncak Gede! Pemahamanmu luar biasa.'; col='text-orange-500'; }
+  else if(pct >= 60){ medal='fa-campground'; msg='Hampir sampai puncak! Baca ulang pos yang masih terasa sulit.'; col='text-green-600'; }
+  else { medal='fa-tents'; msg='Kamu baru sampai pos tengah. Ayo, ulangi materi lalu coba lagi.'; col='text-sky-600'; }
+  $('quiz-box').innerHTML = `
+    <div class="text-center py-4 pop">
+      <div class="text-8xl ${col}"><i class="fa-solid ${medal}"></i></div>
+      <h3 class="fun text-4xl mt-2">Skormu: ${s} / ${n}</h3>
+      <p class="text-xl my-2">${msg}</p>
+      <div class="badge bg-amber-100 text-amber-900 text-lg mb-4">${pct}% benar</div><br>
+      <div class="flex gap-3 justify-center flex-wrap">
+        <button class="btn btn-sun" id="quiz-again"><i class="fa-solid fa-rotate-right"></i> Coba lagi</button>
+        <button class="btn btn-forest" onclick="openMateri(0)"><i class="fa-solid fa-book-open"></i> Baca ulang materi</button>
+        <button class="btn btn-sky" onclick="showTab('refleksi')"><i class="fa-solid fa-campground"></i> Lanjut ke Refleksi</button>
+      </div>
+    </div>`;
+  $('quiz-again').addEventListener('click', startQuiz);
+}
+
+/* =====================================================================
+   BAGIAN 5 — DRAG AND DROP (seret-lepas + ketuk untuk perangkat sentuh)
+   ===================================================================== */
+/* cfg: {pool, zones, status, msg, reset, items:[{id,label,zone}], zoneDefs:[{id,label}], single:boolean} */
+function initDnD(cfg){
+  let selected = null, benar = 0, salah = 0;
+  const items = cfg.items;
+
+  function setStatus(){ $(cfg.status).innerHTML = `<i class="fa-solid fa-check"></i> Benar ${benar}/${items.length} &nbsp; <i class="fa-solid fa-xmark"></i> Salah ${salah}`; }
+
+  // Mencoba menjatuhkan kartu ke sebuah zona
+  function tryDrop(itemId, zoneEl){
+    const item = items.find(x => x.id === itemId);
+    const chip = document.querySelector(`#${cfg.pool} [data-id="${itemId}"]`);
+    if(!item || !chip) return;
+    if(item.zone === zoneEl.dataset.zone){
+      zoneEl.querySelector('.dz-body').appendChild(chip);
+      chip.draggable = false; chip.classList.remove('sel'); chip.classList.add('ok','pop');
+      zoneEl.classList.add('done');
+      benar++; selected = null;
+      if(benar === items.length) $(cfg.msg).innerHTML = '<span class="pop inline-block"><i class="fa-solid fa-trophy text-amber-500"></i> Hebat! Semua kartu terpasang dengan tepat.</span>';
+    } else {
+      salah++;
+      zoneEl.classList.add('shake'); setTimeout(() => zoneEl.classList.remove('shake'), 420);
+      chip.classList.remove('sel'); selected = null;
+      $(cfg.msg).textContent = 'Belum tepat. Pikirkan lagi, lalu coba tempat yang lain!';
+    }
+    setStatus();
+  }
+
+  function build(){
+    selected = null; benar = 0; salah = 0; $(cfg.msg).textContent = '';
+    // Kartu di wadah awal
+    $(cfg.pool).innerHTML = shuffle(items).map(it => `<div class="chip" draggable="true" tabindex="0" data-id="${it.id}">${it.label}</div>`).join('');
+    // Zona tujuan
+    $(cfg.zones).innerHTML = cfg.zoneDefs.map(z => `<div class="dz" data-zone="${z.id}"><div class="text-sm font-bold text-amber-900 mb-1">${z.label}</div><div class="dz-body flex flex-wrap gap-2"></div></div>`).join('');
+
+    // Kartu: seret & ketuk
+    $(cfg.pool).querySelectorAll('.chip').forEach(ch => {
+      ch.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', ch.dataset.id); });
+      const pick = () => {
+        if(ch.classList.contains('ok')) return;
+        $(cfg.pool).querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+        if(selected === ch.dataset.id){ selected = null; } else { selected = ch.dataset.id; ch.classList.add('sel'); }
+      };
+      ch.addEventListener('click', pick);
+      ch.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); pick(); } });
+    });
+    // Zona: terima lepasan & ketukan
+    $(cfg.zones).querySelectorAll('.dz').forEach(z => {
+      z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('over'); });
+      z.addEventListener('dragleave', () => z.classList.remove('over'));
+      z.addEventListener('drop', e => { e.preventDefault(); z.classList.remove('over'); tryDrop(e.dataTransfer.getData('text/plain'), z); });
+      z.addEventListener('click', () => { if(selected) tryDrop(selected, z); });
+    });
+    setStatus();
+  }
+  $(cfg.reset).addEventListener('click', build);
+  build();
+}
+
+function setupGames(){
+  // Permainan 1: istilah ↔ arti (setiap kartu punya zona sendiri)
+  const pairs = [
+    {id:'ip',     term:'Alamat IP', def:'Identitas unik setiap perangkat dalam jaringan'},
+    {id:'switch', term:'Switch',    def:'Menghubungkan perangkat pada jaringan yang sama'},
+    {id:'router', term:'Router',    def:'Menghubungkan perangkat dari dua jaringan berbeda'},
+    {id:'node',   term:'Node',      def:'Titik atau perangkat yang mengirim/menerima data dalam jaringan'},
+    {id:'link',   term:'Link (edge)', def:'Jalur transmisi data antar-node'},
+    {id:'bts',    term:'BTS',       def:'Pemancar dan penerima sinyal bagi ponsel'},
+    {id:'isp',    term:'ISP',       def:'Penyedia layanan internet'}
+  ];
+  initDnD({
+    pool:'g1-pool', zones:'g1-zones', status:'g1-status', msg:'g1-msg', reset:'g1-reset',
+    items: pairs.map(p => ({id:p.id, label:p.term, zone:p.id})),
+    zoneDefs: pairs.map(p => ({id:p.id, label:p.def}))
+  });
+
+  // Permainan 2: kuatkan / lemahkan sinyal
+  const f = [
+    ['f1','Dekat dengan BTS','kuat'],['f2','Ruang terbuka tanpa halangan','kuat'],['f3','Cuaca cerah','kuat'],['f4','Sedikit pengguna di area BTS','kuat'],
+    ['f5','Berada di basement','lemah'],['f6','Dinding beton atau baja','lemah'],['f7','Hujan atau berkabut','lemah'],['f8','Banyak ponsel terhubung ke BTS','lemah'],['f9','Jauh dari BTS','lemah']
+  ];
+  initDnD({
+    pool:'g2-pool', zones:'g2-zones', status:'g2-status', msg:'g2-msg', reset:'g2-reset',
+    items: f.map(x => ({id:x[0], label:x[1], zone:x[2]})),
+    zoneDefs: [{id:'kuat', label:'<i class="fa-solid fa-signal text-green-700"></i> Sinyal MENGUAT'},{id:'lemah', label:'<i class="fa-solid fa-signal text-red-600"></i> Sinyal MELEMAH'}]
+  });
+}
+
+/* =====================================================================
+   BAGIAN 6 — REFLEKSI MURID
+   ===================================================================== */
+const FEELS = [{v:4,e:'😄',t:'Senang sekali'},{v:3,e:'🙂',t:'Senang'},{v:2,e:'😐',t:'Biasa saja'},{v:1,e:'😕',t:'Bingung'}];
+const PAHAM = [{v:1,t:'Belum paham'},{v:2,t:'Sedikit paham'},{v:3,t:'Paham'},{v:4,t:'Sangat paham'}];
+const TOPIK = ['Pengertian jaringan komputer & alamat IP','Jaringan lokal, switch, dan router','Internet, TCP/IP, dan ISP','Konfigurasi jaringan: node dan link','Routing dan jalur terpendek','Komunikasi data pada ponsel & BTS'];
+
+function buildRefleksiForm(){
+  $('ref-feel').innerHTML = FEELS.map(f => `<label class="card-wood px-4 py-2 cursor-pointer text-center"><input type="radio" name="feel" value="${f.v}" class="mr-1"><span class="text-3xl align-middle">${f.e}</span><span class="block text-sm font-bold">${f.t}</span></label>`).join('');
+  $('ref-paham').innerHTML = PAHAM.map(p => `<label class="card-wood px-3 py-3 cursor-pointer text-center font-bold"><input type="radio" name="paham" value="${p.v}" class="mr-1">${p.v}. ${p.t}</label>`).join('');
+  const opt = '<option value="">— pilih —</option>' + TOPIK.map(t => `<option>${t}</option>`).join('');
+  $('ref-mudah').innerHTML = opt; $('ref-sulit').innerHTML = opt + '<option>Semuanya sudah jelas</option>';
+}
+function prepRefleksi(){ /* menampilkan formulir bila sebelumnya sudah mengirim */ }
+
+// Pengodean kode refleksi (agar mudah disalin ke perangkat guru)
+function encodeEntry(o){ const b = new TextEncoder().encode(JSON.stringify(o)); let s=''; b.forEach(x => s += String.fromCharCode(x)); return btoa(s); }
+function decodeEntry(c){ const s = atob(c.trim()); const b = Uint8Array.from(s, ch => ch.charCodeAt(0)); return JSON.parse(new TextDecoder().decode(b)); }
+
+$('ref-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const nama = $('ref-nama').value.trim();
+  const kelas = (document.querySelector('input[name="kelas"]:checked')||{}).value;
+  const feel = (document.querySelector('input[name="feel"]:checked')||{}).value;
+  const paham = (document.querySelector('input[name="paham"]:checked')||{}).value;
+  const err = $('ref-err');
+  const miss = [];
+  if(!nama) miss.push('nama'); if(!kelas) miss.push('kelas (8A atau 8B)'); if(!feel) miss.push('perasaan (soal 1)'); if(!paham) miss.push('tingkat pemahaman (soal 2)');
+  if(miss.length){ err.classList.remove('hidden'); err.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Lengkapi dahulu: <b>' + miss.join(', ') + '</b>.'; err.scrollIntoView({behavior:'smooth', block:'center'}); return; }
+  err.classList.add('hidden');
+  const quiz = store.get(KEY_QUIZ, null);
+  const entry = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,7),
+    waktu: new Date().toISOString(),
+    nama, kelas, absen: $('ref-absen').value || '',
+    perasaan: +feel, paham: +paham,
+    mudah: $('ref-mudah').value, sulit: $('ref-sulit').value,
+    contoh: $('ref-contoh').value.trim(), saran: $('ref-saran').value.trim(),
+    skor: quiz ? quiz.skor + '/' + quiz.total : ''
+  };
+  const all = store.get(KEY_REF, []); all.push(entry); const saved = store.set(KEY_REF, all);
+  $('ref-code').value = encodeEntry(entry);
+  $('ref-form').classList.add('hidden'); $('ref-done').classList.remove('hidden');
+  if(!saved) alert('Peramban tidak mengizinkan penyimpanan lokal. Salin kode refleksi lalu kirimkan kepada pendidik.');
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+$('ref-copy').addEventListener('click', async () => {
+  const t = $('ref-code'); t.select();
+  try{ await navigator.clipboard.writeText(t.value); }catch(e){ document.execCommand('copy'); }
+  $('ref-copy').innerHTML = '<i class="fa-solid fa-check"></i> Tersalin!';
+  setTimeout(() => $('ref-copy').innerHTML = '<i class="fa-solid fa-copy"></i> Salin kode refleksi', 1800);
+});
+$('ref-again').addEventListener('click', () => {
+  $('ref-form').reset(); $('ref-done').classList.add('hidden'); $('ref-form').classList.remove('hidden');
+});
+
+/* =====================================================================
+   BAGIAN 7 — REKAP REFLEKSI (GURU)
+   ===================================================================== */
+let rekapOpen = false;
+
+$('pin-btn').addEventListener('click', tryPin);
+$('pin-input').addEventListener('keydown', e => { if(e.key === 'Enter') tryPin(); });
+function tryPin(){
+  if($('pin-input').value === PIN_GURU){ rekapOpen = true; $('pin-err').classList.add('hidden'); $('pin-input').value=''; renderRekap(); }
+  else $('pin-err').classList.remove('hidden');
+}
+
+function barRow(label, n, max, color){
+  const w = max ? Math.round(n/max*100) : 0;
+  return `<div class="mb-2"><div class="flex justify-between text-sm font-bold"><span>${esc(label)}</span><span>${n}</span></div><div class="h-4 rounded-full bg-white/70 border border-amber-300"><div class="h-full rounded-full" style="width:${w}%;background:${color}"></div></div></div>`;
+}
+
+function renderRekap(){
+  $('rekap-lock').classList.toggle('hidden', rekapOpen);
+  $('rekap-body').classList.toggle('hidden', !rekapOpen);
+  if(!rekapOpen) return;
+
+  const all = store.get(KEY_REF, []);
+  const f = $('rekap-filter').value;
+  const data = f === 'all' ? all : all.filter(x => x.kelas === f);
+  const avg = arr => arr.length ? (arr.reduce((a,b) => a+b, 0) / arr.length).toFixed(2) : '–';
+
+  // Kartu statistik
+  $('rekap-stats').innerHTML = [
+    ['Total refleksi', data.length, 'fa-clipboard-check', '#2d6a4f'],
+    ['Kelas 8A', all.filter(x => x.kelas==='8A').length, 'fa-users', '#1d8fd6'],
+    ['Kelas 8B', all.filter(x => x.kelas==='8B').length, 'fa-users', '#e76f51'],
+    ['Rerata pemahaman (1–4)', avg(data.map(x => x.paham)), 'fa-chart-line', '#7c3aed']
+  ].map(s => `<div class="card p-4 text-center"><div class="text-3xl" style="color:${s[3]}"><i class="fa-solid ${s[2]}"></i></div><div class="fun text-3xl">${s[1]}</div><div class="text-sm font-bold">${s[0]}</div></div>`).join('');
+
+  // Bagian tersulit
+  const cnt = {}; data.forEach(x => { if(x.sulit) cnt[x.sulit] = (cnt[x.sulit]||0) + 1; });
+  const mx = Math.max(0, ...Object.values(cnt));
+  $('rekap-sulit').innerHTML = Object.keys(cnt).length
+    ? Object.entries(cnt).sort((a,b) => b[1]-a[1]).map(([k,v]) => barRow(k, v, mx, '#e76f51')).join('')
+    : '<p class="text-sm">Belum ada data.</p>';
+
+  // Sebaran pemahaman
+  const pc = [1,2,3,4].map(v => data.filter(x => x.paham === v).length);
+  const pm = Math.max(0, ...pc);
+  $('rekap-paham').innerHTML = pc.map((n,i) => barRow(PAHAM[i].v + '. ' + PAHAM[i].t, n, pm, '#2d6a4f')).join('');
+
+  // Tabel
+  const feelE = v => (FEELS.find(f => f.v === v)||{e:''}).e;
+  $('rekap-table').innerHTML = `<tr><th>#</th><th>Waktu</th><th>Nama</th><th>Kelas</th><th>Absen</th><th>Rasa</th><th>Paham</th><th>Kuis</th><th>Termudah</th><th>Tersulit</th><th>Contoh sehari-hari</th><th>Saran</th></tr>` +
+    (data.length ? data.map((x,i) => `<tr><td>${i+1}</td><td>${esc(new Date(x.waktu).toLocaleString('id-ID',{dateStyle:'short',timeStyle:'short'}))}</td><td><b>${esc(x.nama)}</b></td><td>${esc(x.kelas)}</td><td>${esc(x.absen)}</td><td class="text-xl">${feelE(x.perasaan)}</td><td>${x.paham}</td><td>${esc(x.skor)}</td><td>${esc(x.mudah)}</td><td>${esc(x.sulit)}</td><td>${esc(x.contoh)}</td><td>${esc(x.saran)}</td></tr>`).join('')
+    : `<tr><td colspan="12" class="text-center py-4">Belum ada refleksi yang masuk.</td></tr>`);
+}
+$('rekap-filter').addEventListener('change', renderRekap);
+
+// Unduh CSV (dengan BOM agar terbaca benar di Excel)
+$('rekap-csv').addEventListener('click', () => {
+  const all = store.get(KEY_REF, []); const f = $('rekap-filter').value;
+  const data = f === 'all' ? all : all.filter(x => x.kelas === f);
+  const cols = ['waktu','nama','kelas','absen','perasaan','paham','skor','mudah','sulit','contoh','saran'];
+  const q = v => '"' + String(v ?? '').replace(/"/g,'""') + '"';
+  const csv = '\uFEFF' + cols.join(',') + '\n' + data.map(r => cols.map(c => q(r[c])).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+  a.download = 'rekap-refleksi-gunung-gede.csv'; a.click(); URL.revokeObjectURL(a.href);
+});
+$('rekap-clear').addEventListener('click', () => {
+  if(confirm('Hapus SEMUA data refleksi pada perangkat ini? Tindakan ini tidak dapat dibatalkan.')){ store.set(KEY_REF, []); renderRekap(); }
+});
+// Impor kode refleksi dari perangkat murid
+$('import-btn').addEventListener('click', () => {
+  const lines = $('import-box').value.split(/\s*\n\s*/).filter(Boolean);
+  const all = store.get(KEY_REF, []); let tambah = 0, gagal = 0;
+  lines.forEach(l => {
+    try{
+      const o = decodeEntry(l);
+      if(!o.id || !o.nama || !o.kelas){ gagal++; return; }
+      if(!all.some(x => x.id === o.id)){ all.push(o); tambah++; }
+    }catch(e){ gagal++; }
+  });
+  store.set(KEY_REF, all);
+  $('import-msg').textContent = `${tambah} refleksi ditambahkan` + (gagal ? `, ${gagal} kode tidak dapat dibaca.` : '.');
+  $('import-box').value = ''; renderRekap();
+});
+
+/* =====================================================================
+   BAGIAN 8 — INISIALISASI
+   ===================================================================== */
+buildNav();
+renderTujuan();
+renderHomePos();
+renderPos();
+renderQuizIntro();
+setupGames();
+buildRefleksiForm();
+// Tampilkan tab awal tanpa layar transisi
+document.querySelectorAll('.tabbtn').forEach(b => b.classList.toggle('active', b.dataset.tab === 'home'));
+moveHiker();
+</script>
+</body>
+</html>
